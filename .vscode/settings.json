@@ -1,0 +1,13 @@
+{
+  "csharp.experimental.debug.hotReload": true,
+  "omnisharp.enableRoslynAnalyzers": true,
+  "omnisharp.enableEditorConfigSupport": true,
+  "files.encoding": "utf8",
+  "files.insertFinalNewline": true,
+  "editor.formatOnSave": true,
+  "[csharp]": {
+    "editor.defaultFormatter": "csharpier.csharpier-vscode",
+    "editor.tabSize": 4,
+    "editor.insertSpaces": false
+  }
+}

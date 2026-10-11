@@ -1,0 +1,87 @@
+PALETA DE CORES — SISTEMA DE AGENDAMENTO PARA SALÃO DE BELEZA
+
+Estilo geral:
+Elegante, moderno, delicado e profissional. A interface deve usar tons de rosa, vinho e creme, evitando uma aparência exageradamente feminina ou infantil.
+
+CORES PRINCIPAIS
+
+1. Rosa queimado
+HEX: #C77C8A
+Uso: cor principal, destaques, botões e elementos importantes.
+
+2. Vinho
+HEX: #8E3B52
+Uso: menu lateral, cabeçalhos, botões principais e ações importantes.
+
+3. Rosé
+HEX: #DFA6AF
+Uso: destaques secundários, hover, ícones e elementos complementares.
+
+4. Creme claro
+HEX: #FFF8F5
+Uso: fundo principal da aplicação.
+
+5. Bege rosado
+HEX: #F5E8E5
+Uso: fundos secundários, seções, cards e áreas de destaque suave.
+
+6. Marrom escuro
+HEX: #3B3032
+Uso: títulos, textos principais e informações importantes.
+
+7. Cinza amarronzado
+HEX: #75696B
+Uso: textos secundários, descrições, legendas e informações de apoio.
+
+8. Branco
+HEX: #FFFFFF
+Uso: cards, caixas, modais e superfícies da interface.
+
+CORES DE STATUS
+
+9. Verde suave — Sucesso
+HEX: #72A68A
+Uso: agendamentos confirmados, operações concluídas e mensagens de sucesso.
+
+10. Dourado — Atenção
+HEX: #D6A84F
+Uso: agendamentos pendentes, avisos e situações que precisam de atenção.
+
+11. Vermelho suave — Erro
+HEX: #C95C62
+Uso: agendamentos cancelados, erros e alertas críticos.
+
+EXEMPLO DE APLICAÇÃO
+
+Menu lateral:
+- Fundo: #8E3B52
+- Texto: #FFFFFF
+- Item selecionado: #C77C8A
+
+Fundo da aplicação:
+- Fundo principal: #FFF8F5
+- Fundo secundário: #F5E8E5
+
+Cards:
+- Fundo: #FFFFFF
+- Título: #3B3032
+- Texto secundário: #75696B
+
+Botões:
+- Botão principal: #8E3B52
+- Hover: #C77C8A
+- Botão secundário: #DFA6AF
+- Texto dos botões: #FFFFFF
+
+STATUS DOS AGENDAMENTOS:
+- Confirmado: #72A68A
+- Pendente: #D6A84F
+- Em atendimento: #C77C8A
+- Cancelado: #C95C62
+
+TIPOGRAFIA:
+- Títulos: fonte moderna e elegante, com boa legibilidade.
+- Textos: fonte simples, limpa e fácil de ler.
+- Evitar fontes excessivamente decorativas.
+
+A interface deve manter bastante espaço em branco, cantos levemente arredondados, sombras suaves e uma aparência limpa e organizada.

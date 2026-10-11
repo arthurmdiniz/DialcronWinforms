@@ -1,0 +1,17 @@
+# {Titulo do PR}
+
+## Resumo
+- {O que foi feito}
+- {Por que}
+- Base: main
+
+## Alteracoes
+- {Arquivo/area}: {mudanca}
+
+## Testes
+1. {Passo 1}
+2. {Passo 2}
+- Build: `dotnet build -f net10.0-windows10.0.19041.0`
+
+## Observacoes
+- {Limitacoes / pendencias / como reverter}

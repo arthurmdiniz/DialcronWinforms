@@ -426,3 +426,10 @@ FodyWeavers.xsd
 
 # Official VS Code C# Dev Kit Extension exclusion
 #*.lscache
+
+# Pasta Old (projeto legado - nao subir para o git)
+Old/
+
+# Banco de trabalho (criado no primeiro uso)
+DialcronSBDB.db
+**/DialcronSBDB.db
