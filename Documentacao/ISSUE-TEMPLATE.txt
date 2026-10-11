@@ -1,0 +1,64 @@
+## Tela: [Nome da Tela]
+
+[Descrição breve do que a tela deve fazer]
+
+### Layout
+
+```text
+┌────────────────────────────────────────────────────┐
+│  [Ícone] [Título da Tela]                  [✕]   │
+├──────────────────────────┬─────────────────────────┤
+│                          │                         │
+│  [Área de listagem]      │  [Formulário]           │
+│                          │                         │
+│  - Campo 1               │  - Campo 1: [_________] │
+│  - Campo 2               │  - Campo 2: [_________] │
+│  - Campo 3               │  - Campo 3: [_________] │
+│                          │                         │
+│                          │  [Novo] [Salvar]        │
+└──────────────────────────┴─────────────────────────┘
+```
+
+### Requisitos
+
+* Criar um **header** com o título e botão para fechar a tela.
+* Dividir o conteúdo em **duas áreas**:
+  * **Esquerda:** tabela/listagem dos registros.
+  * **Direita:** formulário para cadastro e edição.
+* A tabela deve exibir:
+  * [Campo 1]
+  * [Campo 2]
+  * [Campo 3]
+* O formulário deve possuir os seguintes campos:
+  * [Campo 1]
+  * [Campo 2]
+  * [Campo 3]
+* Adicionar botão **Novo** para iniciar um novo cadastro.
+* Adicionar botão **Salvar** para salvar o registro.
+* Ao selecionar um registro na tabela, seus dados devem ser carregados no formulário para edição.
+* O layout deve manter uma separação visual clara entre a listagem e o formulário.
+* Validar os campos obrigatórios antes de salvar.
+
+### Convenções do projeto
+
+* Cores: usar `Cores.cs` (Primary, Secondary, Creme, etc.)
+* Nome do arquivo: `Forms/[NomeDaTela]Form.cs`
+* Namespace: `DialcronWinforms.Forms`
+* Controles: `_camelCase` com underscore
+* Acesso a dados: via DAO em `Data/DAO/`
+* Banco: `Database.Instance.InitializeAsync()`
+
+### Checklist
+
+```
+[ ] Arquivo Forms/[NomeDaTela]Form.cs criado
+[ ] Classe herda de Form
+[ ] Text, Size, StartPosition, BackColor configurados
+[ ] DataGridView para listagem
+[ ] TextBoxes para formulário
+[ ] Botões Novo e Salvar
+[ ] Eventos Click e Load implementados
+[ ] DAO criado em Data/DAO/
+[ ] Validação de campos obrigatórios
+[ ] dotnet build sem erro
+```
