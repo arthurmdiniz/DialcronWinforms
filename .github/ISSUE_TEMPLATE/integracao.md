@@ -5,6 +5,14 @@ title: "Integrar "
 labels: integracao
 ---
 
+## Tipo
+
+- [ ] Front (Tela)
+- [ ] Back (DAO)
+- [ ] Integração
+- [ ] Outros
+- [ ] Documentação
+
 ## Integração: [Nome da Tela] + [Nome do DAO]
 
 ### Requisitos

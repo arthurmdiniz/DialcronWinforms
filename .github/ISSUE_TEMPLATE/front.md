@@ -5,6 +5,14 @@ title: "Criar tela de "
 labels: front
 ---
 
+## Tipo
+
+- [ ] Front (Tela)
+- [ ] Back (DAO)
+- [ ] Integração
+- [ ] Outros
+- [ ] Documentação
+
 ## Tela: [Nome da Tela]
 
 [Descrição breve do que a tela deve fazer]

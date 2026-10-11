@@ -75,6 +75,17 @@ Cores.cs         # Paleta de cores
 
 ## Como contribuir
 
-1. Crie uma branch: `git checkout -b minha-feature`
+### Padrão de branches
+
+Formato: `DWF-[numero-da-issue]`
+
+Exemplos:
+- `DWF-1` - Issue 1
+- `DWF-2` - Issue 2
+
+### Passos
+
+1. Crie uma branch a partir da issue: `git checkout -b DWF-1`
 2. Desenvolva e teste
-3. Abra um Pull Request
+3. Abra um Pull Request usando o template do repositório
+4. Após aprovado, faça merge usando o template de merge

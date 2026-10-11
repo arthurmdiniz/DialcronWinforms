@@ -5,6 +5,14 @@ title: "Criar DAO de "
 labels: back
 ---
 
+## Tipo
+
+- [ ] Front (Tela)
+- [ ] Back (DAO)
+- [ ] Integração
+- [ ] Outros
+- [ ] Documentação
+
 ## DAO: [Nome da Entidade]
 
 [Descrição breve do que o DAO deve fazer]
