@@ -4,7 +4,10 @@ partial class MainForm
 {
     private System.ComponentModel.IContainer components = null;
 
-    private Label lblTitulo;
+    private TableLayoutPanel tlpLayout;
+    private Panel pnlBotoes;
+    private Panel pnlConteudo;
+    private PictureBox picLogo;
     private Label lblSubtitulo;
     private Button btnAgenda;
     private Button btnCadastros;
@@ -19,75 +22,138 @@ partial class MainForm
         base.Dispose(disposing);
     }
 
+    private void ConfigurarBotao(Button btn)
+    {
+        btn.BackColor = Cores.Primary;
+        btn.ForeColor = Cores.White;
+        btn.FlatStyle = FlatStyle.Flat;
+        btn.FlatAppearance.BorderSize = 0;
+        btn.FlatAppearance.MouseOverBackColor = Cores.Tertiary;
+        btn.FlatAppearance.MouseDownBackColor = Cores.Primary;
+        btn.Font = new Font("Segoe UI", 12);
+    }
+
     private void InitializeComponent()
     {
-        this.lblTitulo = new Label();
-        this.lblSubtitulo = new Label();
-        this.btnAgenda = new Button();
-        this.btnCadastros = new Button();
-        this.btnBackup = new Button();
-        this.SuspendLayout();
-
-        // lblTitulo
-        this.lblTitulo.Text = "Dialcron";
-        this.lblTitulo.Font = new Font("Segoe UI", 24, FontStyle.Bold);
-        this.lblTitulo.ForeColor = Cores.Primary;
-        this.lblTitulo.AutoSize = true;
-        this.lblTitulo.Location = new Point(160, 40);
-
+        tlpLayout = new TableLayoutPanel();
+        pnlBotoes = new Panel();
+        picLogo = new PictureBox();
+        lblSubtitulo = new Label();
+        btnAgenda = new Button();
+        btnCadastros = new Button();
+        btnBackup = new Button();
+        pnlConteudo = new Panel();
+        tlpLayout.SuspendLayout();
+        pnlBotoes.SuspendLayout();
+        ((System.ComponentModel.ISupportInitialize)picLogo).BeginInit();
+        SuspendLayout();
+        //
+        // tlpLayout
+        //
+        tlpLayout.ColumnCount = 2;
+        tlpLayout.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 240F));
+        tlpLayout.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
+        tlpLayout.Controls.Add(pnlBotoes, 0, 0);
+        tlpLayout.Controls.Add(pnlConteudo, 1, 0);
+        tlpLayout.Dock = DockStyle.Fill;
+        tlpLayout.Location = new Point(0, 0);
+        tlpLayout.Name = "tlpLayout";
+        tlpLayout.RowCount = 1;
+        tlpLayout.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
+        tlpLayout.Size = new Size(900, 650);
+        tlpLayout.TabIndex = 0;
+        //
+        // pnlBotoes
+        //
+        pnlBotoes.AutoScroll = true;
+        pnlBotoes.BackColor = Cores.Creme;
+        pnlBotoes.Controls.Add(picLogo);
+        pnlBotoes.Controls.Add(lblSubtitulo);
+        pnlBotoes.Controls.Add(btnAgenda);
+        pnlBotoes.Controls.Add(btnCadastros);
+        pnlBotoes.Controls.Add(btnBackup);
+        pnlBotoes.Dock = DockStyle.Fill;
+        pnlBotoes.Location = new Point(3, 3);
+        pnlBotoes.Name = "pnlBotoes";
+        pnlBotoes.Padding = new Padding(20);
+        pnlBotoes.Size = new Size(234, 644);
+        pnlBotoes.TabIndex = 0;
+        //
+        // picLogo
+        //
+        picLogo.BackColor = Cores.Creme;
+        picLogo.Location = new Point(20, 20);
+        picLogo.Name = "picLogo";
+        picLogo.Size = new Size(120, 120);
+        picLogo.SizeMode = PictureBoxSizeMode.Zoom;
+        picLogo.TabIndex = 0;
+        picLogo.TabStop = false;
+        //
         // lblSubtitulo
-        this.lblSubtitulo.Text = "Sistema de agendamentos";
-        this.lblSubtitulo.Font = new Font("Segoe UI", 12);
-        this.lblSubtitulo.ForeColor = Cores.Gray600;
-        this.lblSubtitulo.AutoSize = true;
-        this.lblSubtitulo.Location = new Point(150, 85);
-
+        //
+        lblSubtitulo.AutoSize = true;
+        lblSubtitulo.Font = new Font("Segoe UI", 12F);
+        lblSubtitulo.ForeColor = Cores.Gray600;
+        lblSubtitulo.Location = new Point(20, 150);
+        lblSubtitulo.Name = "lblSubtitulo";
+        lblSubtitulo.Size = new Size(193, 21);
+        lblSubtitulo.TabIndex = 1;
+        lblSubtitulo.Text = "Sistema de agendamentos";
+        //
         // btnAgenda
-        this.btnAgenda.Text = "Agenda";
-        this.btnAgenda.Size = new Size(200, 45);
-        this.btnAgenda.Location = new Point(125, 140);
-        this.btnAgenda.BackColor = Cores.Primary;
-        this.btnAgenda.ForeColor = Cores.White;
-        this.btnAgenda.FlatStyle = FlatStyle.Flat;
-        this.btnAgenda.Font = new Font("Segoe UI", 12);
-        this.btnAgenda.FlatAppearance.BorderSize = 0;
-        this.btnAgenda.Name = "btnAgenda";
-
+        //
+        btnAgenda.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+        btnAgenda.Location = new Point(20, 185);
+        btnAgenda.Name = "btnAgenda";
+        btnAgenda.Size = new Size(190, 42);
+        btnAgenda.TabIndex = 2;
+        btnAgenda.Text = "Agenda";
+        ConfigurarBotao(btnAgenda);
+        //
         // btnCadastros
-        this.btnCadastros.Text = "Cadastros";
-        this.btnCadastros.Size = new Size(200, 45);
-        this.btnCadastros.Location = new Point(125, 200);
-        this.btnCadastros.BackColor = Cores.Primary;
-        this.btnCadastros.ForeColor = Cores.White;
-        this.btnCadastros.FlatStyle = FlatStyle.Flat;
-        this.btnCadastros.Font = new Font("Segoe UI", 12);
-        this.btnCadastros.FlatAppearance.BorderSize = 0;
-        this.btnCadastros.Name = "btnCadastros";
-
+        //
+        btnCadastros.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+        btnCadastros.Location = new Point(20, 237);
+        btnCadastros.Name = "btnCadastros";
+        btnCadastros.Size = new Size(190, 42);
+        btnCadastros.TabIndex = 3;
+        btnCadastros.Text = "Cadastros";
+        ConfigurarBotao(btnCadastros);
+        //
         // btnBackup
-        this.btnBackup.Text = "Backup";
-        this.btnBackup.Size = new Size(200, 45);
-        this.btnBackup.Location = new Point(125, 260);
-        this.btnBackup.BackColor = Cores.Primary;
-        this.btnBackup.ForeColor = Cores.White;
-        this.btnBackup.FlatStyle = FlatStyle.Flat;
-        this.btnBackup.Font = new Font("Segoe UI", 12);
-        this.btnBackup.FlatAppearance.BorderSize = 0;
-        this.btnBackup.Name = "btnBackup";
-
+        //
+        btnBackup.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+        btnBackup.Location = new Point(20, 289);
+        btnBackup.Name = "btnBackup";
+        btnBackup.Size = new Size(190, 42);
+        btnBackup.TabIndex = 4;
+        btnBackup.Text = "Backup";
+        ConfigurarBotao(btnBackup);
+        //
+        // pnlConteudo
+        //
+        pnlConteudo.BackColor = Cores.Creme;
+        pnlConteudo.BorderStyle = BorderStyle.FixedSingle;
+        pnlConteudo.Dock = DockStyle.Fill;
+        pnlConteudo.Location = new Point(243, 3);
+        pnlConteudo.Name = "pnlConteudo";
+        pnlConteudo.Size = new Size(654, 644);
+        pnlConteudo.TabIndex = 1;
+        //
         // MainForm
-        this.Text = "Dialcron";
-        this.Size = new Size(450, 400);
-        this.StartPosition = FormStartPosition.CenterScreen;
-        this.ClientSize = new Size(450, 400);
-        this.BackColor = Cores.Creme;
-
-        this.Controls.Add(this.lblTitulo);
-        this.Controls.Add(this.lblSubtitulo);
-        this.Controls.Add(this.btnAgenda);
-        this.Controls.Add(this.btnCadastros);
-        this.Controls.Add(this.btnBackup);
-        this.ResumeLayout(false);
-        this.PerformLayout();
+        //
+        BackColor = Cores.Creme;
+        ClientSize = new Size(900, 650);
+        Controls.Add(tlpLayout);
+        ForeColor = Cores.Gray900;
+        MinimumSize = new Size(900, 650);
+        Name = "MainForm";
+        StartPosition = FormStartPosition.CenterScreen;
+        Text = "Dialcron";
+        ((System.ComponentModel.ISupportInitialize)picLogo).EndInit();
+        tlpLayout.ResumeLayout(false);
+        pnlBotoes.ResumeLayout(false);
+        pnlBotoes.PerformLayout();
+        ResumeLayout(false);
     }
 }

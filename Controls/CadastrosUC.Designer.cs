@@ -1,6 +1,6 @@
-namespace DialcronWinforms.Forms;
+namespace DialcronWinforms.Controls;
 
-partial class CadastrosForm
+partial class CadastrosUC
 {
     private System.ComponentModel.IContainer components = null;
 
@@ -9,7 +9,6 @@ partial class CadastrosForm
     private Button btnServicos;
     private Button btnProfissionais;
     private Button btnUnidades;
-    private Button btnVoltar;
 
     protected override void Dispose(bool disposing)
     {
@@ -20,6 +19,17 @@ partial class CadastrosForm
         base.Dispose(disposing);
     }
 
+    private void ConfigurarBotao(Button btn)
+    {
+        btn.BackColor = Cores.Primary;
+        btn.ForeColor = Cores.White;
+        btn.FlatStyle = FlatStyle.Flat;
+        btn.FlatAppearance.BorderSize = 0;
+        btn.FlatAppearance.MouseOverBackColor = Cores.Tertiary;
+        btn.FlatAppearance.MouseDownBackColor = Cores.Primary;
+        btn.Font = new Font("Segoe UI", 11);
+    }
+
     private void InitializeComponent()
     {
         this.lblTitulo = new Label();
@@ -27,7 +37,6 @@ partial class CadastrosForm
         this.btnServicos = new Button();
         this.btnProfissionais = new Button();
         this.btnUnidades = new Button();
-        this.btnVoltar = new Button();
         this.SuspendLayout();
 
         // lblTitulo
@@ -36,66 +45,47 @@ partial class CadastrosForm
         this.lblTitulo.ForeColor = Cores.Primary;
         this.lblTitulo.AutoSize = true;
         this.lblTitulo.Location = new Point(140, 30);
+        this.lblTitulo.Anchor = AnchorStyles.Top | AnchorStyles.Left;
 
         // btnClientes
         this.btnClientes.Text = "Clientes";
         this.btnClientes.Size = new Size(200, 40);
         this.btnClientes.Location = new Point(100, 90);
-        this.btnClientes.BackColor = Cores.Primary;
-        this.btnClientes.ForeColor = Cores.White;
-        this.btnClientes.FlatStyle = FlatStyle.Flat;
-        this.btnClientes.Font = new Font("Segoe UI", 11);
-        this.btnClientes.FlatAppearance.BorderSize = 0;
+        this.btnClientes.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
         this.btnClientes.Name = "btnClientes";
+        this.ConfigurarBotao(this.btnClientes);
 
         // btnServicos
         this.btnServicos.Text = "Servicos";
         this.btnServicos.Size = new Size(200, 40);
         this.btnServicos.Location = new Point(100, 145);
-        this.btnServicos.BackColor = Cores.Primary;
-        this.btnServicos.ForeColor = Cores.White;
-        this.btnServicos.FlatStyle = FlatStyle.Flat;
-        this.btnServicos.Font = new Font("Segoe UI", 11);
-        this.btnServicos.FlatAppearance.BorderSize = 0;
+        this.btnServicos.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
         this.btnServicos.Name = "btnServicos";
+        this.ConfigurarBotao(this.btnServicos);
 
         // btnProfissionais
         this.btnProfissionais.Text = "Profissionais";
         this.btnProfissionais.Size = new Size(200, 40);
         this.btnProfissionais.Location = new Point(100, 200);
-        this.btnProfissionais.BackColor = Cores.Primary;
-        this.btnProfissionais.ForeColor = Cores.White;
-        this.btnProfissionais.FlatStyle = FlatStyle.Flat;
-        this.btnProfissionais.Font = new Font("Segoe UI", 11);
-        this.btnProfissionais.FlatAppearance.BorderSize = 0;
+        this.btnProfissionais.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
         this.btnProfissionais.Name = "btnProfissionais";
+        this.ConfigurarBotao(this.btnProfissionais);
 
         // btnUnidades
         this.btnUnidades.Text = "Unidades";
         this.btnUnidades.Size = new Size(200, 40);
         this.btnUnidades.Location = new Point(100, 255);
-        this.btnUnidades.BackColor = Cores.Primary;
-        this.btnUnidades.ForeColor = Cores.White;
-        this.btnUnidades.FlatStyle = FlatStyle.Flat;
-        this.btnUnidades.Font = new Font("Segoe UI", 11);
-        this.btnUnidades.FlatAppearance.BorderSize = 0;
+        this.btnUnidades.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
         this.btnUnidades.Name = "btnUnidades";
+        this.ConfigurarBotao(this.btnUnidades);
 
-        // btnVoltar
-        this.btnVoltar.Text = "Voltar";
-        this.btnVoltar.Size = new Size(100, 35);
-        this.btnVoltar.Location = new Point(150, 310);
-        this.btnVoltar.BackColor = Cores.Gray200;
-        this.btnVoltar.ForeColor = Cores.Gray900;
-        this.btnVoltar.FlatStyle = FlatStyle.Flat;
-        this.btnVoltar.Font = new Font("Segoe UI", 10);
-        this.btnVoltar.FlatAppearance.BorderSize = 0;
-        this.btnVoltar.Name = "btnVoltar";
-
-        // CadastrosForm
-        this.Text = "Cadastros";
+        // CadastrosUC
+        this.Name = "CadastrosUC";
         this.ClientSize = new Size(400, 400);
-        this.StartPosition = FormStartPosition.CenterScreen;
+        this.Dock = DockStyle.Fill;
+        this.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+        this.Padding = new Padding(20);
+        this.AutoScroll = true;
         this.BackColor = Cores.Creme;
 
         this.Controls.Add(this.lblTitulo);
@@ -103,7 +93,6 @@ partial class CadastrosForm
         this.Controls.Add(this.btnServicos);
         this.Controls.Add(this.btnProfissionais);
         this.Controls.Add(this.btnUnidades);
-        this.Controls.Add(this.btnVoltar);
         this.ResumeLayout(false);
         this.PerformLayout();
     }

@@ -1,165 +1,166 @@
 # Como Criar uma Tela
 
-Guia passo a passo para criar telas (Forms) no DialcronWinforms, seguindo o padrao do projeto: **code-behind, sem ViewModel**, com o code-behind chamando os DAOs direto.
+Guia para criar telas no DialcronWinforms. O padrão do projeto é: **cada tela é um `UserControl`**, carregado dentro do painel de conteúdo do `MainForm`. Não abrimos novas janelas (`ShowDialog()` / `Show()`): a navegação troca o conteúdo do painel, e o menu lateral fica sempre visível.
+
+Sem ViewModel: o code-behind chama os DAOs diretamente.
 
 ---
 
-## 1. Onde ficam as telas
-
-Todas as telas ficam em `Forms/`:
+## 1. Como a navegação funciona
 
 ```
+MainForm (janela fixa)
+├── pnlBotoes      → menu lateral (logo, Agenda, Cadastros, Backup)
+└── pnlConteudo    → recebe o UserControl ativo (NavigationHelper)
+```
+
+- `Controls/` guarda as telas (`AgendaUC`, `CadastrosUC`, `ClienteUC`, `ServicoUC`, `ProfissionalUC`, `UnidadeUC`).
+- `Navigation/NavigationHelper.cs` troca o controle exibido em `pnlConteudo`.
+- `Forms/MainForm.cs` decide qual tela abrir em cada clique e assina os eventos de navegação.
+- Cada tela é criada uma única vez (`??=` ou no construtor do `MainForm`) e reutilizada.
+- Não há botão "Voltar" nas telas: o usuário navega pelo menu lateral.
+
+---
+
+## 2. Onde ficam os arquivos
+
+```
+Controls/
+├── AgendaUC.cs / .Designer.cs
+├── CadastrosUC.cs / .Designer.cs
+├── ClienteUC.cs / .Designer.cs
+├── ServicoUC.cs / .Designer.cs
+├── ProfissionalUC.cs / .Designer.cs
+└── UnidadeUC.cs / .Designer.cs
+
 Forms/
-├── MainForm.cs          # Tela principal (menu)
-├── CadastrosForm.cs      # Menu de cadastros
-├── ClienteForm.cs        # Cadastro de clientes
-├── ServicoForm.cs        # Cadastro de servicos
-├── ProfissionalForm.cs   # Cadastro de profissionais
-├── UnidadeForm.cs        # Cadastro de unidades
-└── AgendaForm.cs         # Agenda de atendimentos
+└── MainForm.cs / .Designer.cs     # único Form do projeto
+
+Navigation/
+└── NavigationHelper.cs
 ```
 
-Padroes de nomenclatura:
+Padrões de nomenclatura:
 
-| Item | Padrao | Exemplo |
+| Item | Padrão | Exemplo |
 |------|--------|---------|
-| Arquivo | `{Feature}Form.cs` | `ClienteForm.cs` |
-| Classe | `partial class {Feature}Form : Form` | `ClienteForm` |
-| Namespace | `DialcronWinforms.Forms` | `namespace DialcronWinforms.Forms;` |
-| Controles | `_camelCase` com underscore | `_txtNome`, `_btnSalvar` |
+| Arquivo | `{Feature}UC.cs` | `ClienteUC.cs` |
+| Classe | `public partial class {Feature}UC : UserControl` | `ClienteUC` |
+| Namespace | `DialcronWinforms.Controls` | `namespace DialcronWinforms.Controls;` |
+| Campo do MainForm | `_{feature}UC` | `_clienteUC` |
+| Evento de navegação | `{Opcoes}Clicked` | `ClientesClicked` |
 
 ---
 
-## 2. Passo a passo
+## 3. Passo a passo para criar uma tela
 
-### Passo 1 - Criar o arquivo
+### Passo 1 - Criar o UserControl
 
-Em `Forms/`, crie o arquivo da nova tela:
+No Visual Studio: **Add → User Control** em `Controls/`, com o nome `MinhaTelaUC.cs`. O Visual Studio cria o `.cs` e o `.Designer.cs`.
 
-- `MinhaTelaForm.cs`
+Pelo Designer, adicione os controles e configure as propriedades (`Name`, `Text`, `BackColor`, `Font` etc.). Para ligar um evento: selecione o controle, clique no ícone de raio na janela Properties e dê duplo clique no evento.
 
-### Passo 2 - Criar o Designer no Visual Studio
+> **Importante**: o `.Designer.cs` é gerado pelo Visual Studio. Use o Designer para alterar controles. Se editar à mão, mantenha o estilo do arquivo existente.
 
-O Visual Studio pode gerar o arquivo `.Designer.cs` automaticamente com os controles visuais. Para isso:
+### Passo 2 - Ajustar o UserControl ao painel
 
-1. No **Solution Explorer**, clique com o botão direito no projeto
-2. Selecione **Add** → **Windows Form**
-3. Nomeie o arquivo como `MinhaTelaForm.cs` (o Visual Studio cria o `.cs` e o `.Designer.cs` juntos)
-4. No **Designer** (tela visual), arraste controles da **Toolbox** (Labels, TextBoxes, Buttons, DataGridView, etc.)
-5. Na janela **Properties** (F4), configure `Name`, `Text`, `Size`, `Location`, `BackColor`, etc.
-6. Para conectar eventos: selecione o controle → na janela Properties clique no ícone de raio (Events) → duplo-clique no evento (ex: `Click`) para gerar o handler
-
-O Visual Studio gera automaticamente no `.Designer.cs`:
+Toda tela deve preencher o painel de conteúdo. No `InitializeComponent` (ou nas propriedades do Designer):
 
 ```csharp
-partial class MinhaTelaForm
+this.Dock = DockStyle.Fill;
+this.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+this.Padding = new Padding(20);
+this.AutoScroll = true;
+this.BackColor = Cores.Creme;
+this.ForeColor = Cores.Gray900;
+```
+
+> `UserControl` não tem `StartPosition`, `Text` como janela nem `ClientSize` de janela. Não use essas propriedades em telas.
+
+### Passo 3 - Estilizar com a paleta
+
+Cores sempre via `Cores.*` (ver `Cores.cs`). Botões seguem o padrão da barra lateral:
+
+```csharp
+private void ConfigurarBotao(Button btn)
 {
-    private System.ComponentModel.IContainer components = null;
-
-    private Label lblTitulo;
-    private Button btnSalvar;
-
-    protected override void Dispose(bool disposing) { ... }
-
-    private void InitializeComponent()
-    {
-        this.lblTitulo = new Label();
-        this.btnSalvar = new Button();
-        // ... configuracoes dos controles
-        this.Controls.Add(this.lblTitulo);
-        this.Controls.Add(this.btnSalvar);
-    }
+    btn.BackColor = Cores.Primary;
+    btn.ForeColor = Cores.White;
+    btn.FlatStyle = FlatStyle.Flat;
+    btn.FlatAppearance.BorderSize = 0;
+    btn.FlatAppearance.MouseOverBackColor = Cores.Tertiary;
+    btn.FlatAppearance.MouseDownBackColor = Cores.Primary;
+    btn.Font = new Font("Segoe UI", 11);
 }
 ```
 
-> **Importante**: O `.Designer.cs` e gerado pelo Visual Studio. Nao edite manualmente — use a interface visual (Designer) para adicionar, remover ou modificar controles. A logica de negocio fica no `.cs` (code-behind).
->
-> **Pre-requisito**: O projeto deve abrir corretamente no Visual Studio. Se as telas nao abrirem no Designer, verifique se os eventos `Click` estao conectados no `.cs` (code-behind) — sem eles, os botoes abrem mas nao executam nenhuma acao.
+Chame `ConfigurarBotao(...)` no `InitializeComponent` de cada botão.
 
-### Passo 4 - Estrutura basica (opcional, se nao usar o Designer)
+> Se o Designer regenerar o arquivo e as chamadas sumirem, as cores dos botões voltam ao padrão do sistema. Confira depois de editar pelo Designer.
+
+### Passo 4 - Registrar a tela no MainForm
+
+Se a tela é aberta por um botão do menu lateral, a regra fica no `MainForm`. Exemplo com a Agenda:
 
 ```csharp
-namespace DialcronWinforms.Forms;
+private AgendaUC? _agendaUC;
 
-public class MinhaTelaForm : Form
+private void BtnAgenda_Click(object? sender, EventArgs e)
 {
-    public MinhaTelaForm()
-    {
-        Text = "Minha Tela";
-        Size = new Size(600, 450);
-        StartPosition = FormStartPosition.CenterScreen;
-        BackColor = Cores.Creme;
-    }
+    _agendaUC ??= new AgendaUC();
+    NavigationHelper.NavigateTo(_agendaUC);
 }
 ```
 
-### Passo 5 - Adicionar controles manualmente
+Se a tela é aberta a partir de outra tela (como os cadastros, dentro de `CadastrosUC`), a `UserControl` pai expõe um evento e o `MainForm` assina no construtor, **uma única vez**:
 
 ```csharp
-public MinhaTelaForm()
+// CadastrosUC.cs
+public event EventHandler? ClientesClicked;
+
+private void BtnClientes_Click(object? sender, EventArgs e) => ClientesClicked?.Invoke(this, e);
+```
+
+```csharp
+// MainForm.cs - construtor
+_cadastrosUC = new CadastrosUC();
+_cadastrosUC.ClientesClicked += (s, e) => NavigateToCliente();
+
+private void NavigateToCliente()
 {
-    Text = "Minha Tela";
-    Size = new Size(600, 450);
-    StartPosition = FormStartPosition.CenterScreen;
-    BackColor = Cores.Creme;
-
-    var lblTitulo = new Label
-    {
-        Text = "Minha Tela",
-        Font = new Font("Segoe UI", 18, FontStyle.Bold),
-        ForeColor = Cores.Primary,
-        AutoSize = true,
-        Location = new Point(20, 20)
-    };
-
-    var btnSalvar = new Button
-    {
-        Text = "Salvar",
-        Size = new Size(100, 35),
-        Location = new Point(20, 80),
-        BackColor = Cores.Primary,
-        ForeColor = Cores.White,
-        FlatStyle = FlatStyle.Flat
-    };
-    btnSalvar.FlatAppearance.BorderSize = 0;
-    btnSalvar.Click += OnSalvarClicked;
-
-    Controls.Add(lblTitulo);
-    Controls.Add(btnSalvar);
-}
-
-private void OnSalvarClicked(object? sender, EventArgs e)
-{
-    // Logica do botao
+    _clienteUC ??= new ClienteUC();
+    NavigationHelper.NavigateTo(_clienteUC);
 }
 ```
 
-### Passo 6 - Se a tela precisa do banco
+> Não assine eventos dentro do clique do botão: a cada clique o handler seria adicionado de novo.
 
-O singleton `Database` entrega a `SQLiteAsyncConnection`; cada DAO e criado com ela no construtor:
+### Passo 5 - Se a tela precisa do banco
+
+O singleton `Database` entrega a `SQLiteAsyncConnection`. Cada DAO é criado com ela no construtor. Carregue os dados no evento `Load` da tela (ou ao ser exibida), não no construtor:
 
 ```csharp
 using DialcronWinforms.Data;
 
-private async void MinhaTelaForm_Load(object? sender, EventArgs e)
+private async void OnMinhaTelaLoad(object? sender, EventArgs e)
 {
     try
     {
         var dao = new MeuDAO(await Database.Instance.InitializeAsync());
-        var registros = await dao.GetAllAsync();
-
-        // Preencher DataGridView ou outros controles
+        _grid.DataSource = await dao.GetAllAsync();
     }
     catch (Exception ex)
     {
-        MessageBox.Show($"Nao foi possivel carregar: {ex.Message}", "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        MessageBox.Show($"Não foi possível carregar: {ex.Message}", "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error);
     }
 }
 ```
 
-Como `Database.InitializeAsync()` e idempotente, pode chamar em qualquer tela. Exemplo real: `Data/DAO/BackupDAO.cs`.
+Como `Database.InitializeAsync()` é idempotente, pode ser chamado em qualquer tela. Referência real: `Data/DAO/BackupDAO.cs`.
 
-### Passo 7 - Compilar
+> Como a tela é reutilizada, o `Load` dispara uma vez. Para recarregar a cada exibição, chame o carregamento dentro do próprio método que a exibe (por exemplo, em `BtnAgenda_Click` antes de `NavigateTo`), ou crie um método público `Recarregar()` na tela.
+
+### Passo 6 - Compilar
 
 ```bash
 dotnet build
@@ -167,310 +168,175 @@ dotnet build
 
 ---
 
-## 3. Exemplo 1 - Tela simples (menu de botoes)
+## 4. Exemplo 1 - Tela com botões
 
-### `Forms/MinhaTelaForm.cs`
+### `Controls/CadastrosUC.cs`
 
 ```csharp
-namespace DialcronWinforms.Forms;
+namespace DialcronWinforms.Controls;
 
-public class MinhaTelaForm : Form
+public partial class CadastrosUC : UserControl
 {
-    public MinhaTelaForm()
+    public event EventHandler? ClientesClicked;
+    public event EventHandler? ServicosClicked;
+
+    public CadastrosUC()
     {
-        Text = "Minha Tela";
-        Size = new Size(400, 350);
-        StartPosition = FormStartPosition.CenterScreen;
-        BackColor = Cores.Creme;
+        InitializeComponent();
 
-        var lblTitulo = new Label
-        {
-            Text = "Minha Tela",
-            Font = new Font("Segoe UI", 20, FontStyle.Bold),
-            ForeColor = Cores.Primary,
-            AutoSize = true,
-            Location = new Point(120, 30)
-        };
-
-        var btnOpcaoUm = new Button
-        {
-            Text = "Opcao 1",
-            Size = new Size(200, 40),
-            Location = new Point(100, 90),
-            BackColor = Cores.Primary,
-            ForeColor = Cores.White,
-            FlatStyle = FlatStyle.Flat,
-            Font = new Font("Segoe UI", 11)
-        };
-        btnOpcaoUm.FlatAppearance.BorderSize = 0;
-        btnOpcaoUm.Click += OnOpcaoUmClicked;
-
-        var btnOpcaoDois = new Button
-        {
-            Text = "Opcao 2",
-            Size = new Size(200, 40),
-            Location = new Point(100, 145),
-            BackColor = Cores.Primary,
-            ForeColor = Cores.White,
-            FlatStyle = FlatStyle.Flat,
-            Font = new Font("Segoe UI", 11)
-        };
-        btnOpcaoDois.FlatAppearance.BorderSize = 0;
-        btnOpcaoDois.Click += OnOpcaoDoisClicked;
-
-        var btnVoltar = new Button
-        {
-            Text = "Voltar",
-            Size = new Size(100, 35),
-            Location = new Point(150, 220),
-            BackColor = Cores.Gray200,
-            ForeColor = Cores.Gray900,
-            FlatStyle = FlatStyle.Flat,
-            Font = new Font("Segoe UI", 10)
-        };
-        btnVoltar.FlatAppearance.BorderSize = 0;
-        btnVoltar.Click += OnVoltarClicked;
-
-        Controls.Add(lblTitulo);
-        Controls.Add(btnOpcaoUm);
-        Controls.Add(btnOpcaoDois);
-        Controls.Add(btnVoltar);
+        btnClientes.Click += (s, e) => ClientesClicked?.Invoke(this, e);
+        btnServicos.Click += (s, e) => ServicosClicked?.Invoke(this, e);
     }
+}
+```
 
-    private void OnOpcaoUmClicked(object? sender, EventArgs e)
-    {
-        // Navegar para outra tela
-    }
+### `Controls/CadastrosUC.Designer.cs` (trecho)
 
-    private void OnOpcaoDoisClicked(object? sender, EventArgs e)
-    {
-        // Navegar para outra tela
-    }
+```csharp
+private void InitializeComponent()
+{
+    this.btnClientes = new Button();
+    this.btnServicos = new Button();
+    this.SuspendLayout();
 
-    private void OnVoltarClicked(object? sender, EventArgs e)
-    {
-        Close();
-    }
+    this.btnClientes.Text = "Clientes";
+    this.btnClientes.Size = new Size(190, 42);
+    this.btnClientes.Location = new Point(20, 20);
+    this.btnClientes.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+    this.ConfigurarBotao(this.btnClientes);
+
+    this.btnServicos.Text = "Serviços";
+    this.btnServicos.Size = new Size(190, 42);
+    this.btnServicos.Location = new Point(20, 72);
+    this.btnServicos.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+    this.ConfigurarBotao(this.btnServicos);
+
+    this.Dock = DockStyle.Fill;
+    this.BackColor = Cores.Creme;
+    this.Controls.Add(this.btnClientes);
+    this.Controls.Add(this.btnServicos);
+    this.ResumeLayout(false);
+    this.PerformLayout();
 }
 ```
 
 ---
 
-## 4. Exemplo 2 - Tela de listagem (DataGridView)
+## 5. Exemplo 2 - Tela de listagem (DataGridView)
 
-Lista carregada do banco, com busca e DataGridView.
-
-### `Forms/ListaForm.cs`
+### `Controls/ClienteUC.cs`
 
 ```csharp
 using DialcronWinforms.Data;
 
-namespace DialcronWinforms.Forms;
+namespace DialcronWinforms.Controls;
 
-public class ListaForm : Form
+public partial class ClienteUC : UserControl
 {
-    private readonly DataGridView _grid = new();
-    private readonly TextBox _txtBusca = new();
-
-    public ListaForm()
+    public ClienteUC()
     {
-        Text = "Lista";
-        Size = new Size(800, 500);
-        StartPosition = FormStartPosition.CenterScreen;
-        BackColor = Cores.Creme;
+        InitializeComponent();
 
-        var lblTitulo = new Label
-        {
-            Text = "Lista",
-            Font = new Font("Segoe UI", 18, FontStyle.Bold),
-            ForeColor = Cores.Primary,
-            AutoSize = true,
-            Location = new Point(20, 20)
-        };
-
-        _txtBusca.Location = new Point(20, 60);
-        _txtBusca.Size = new Size(300, 25);
-        _txtBusca.PlaceholderText = "Buscar...";
-        _txtBusca.TextChanged += OnBuscaTextChanged;
-
-        _grid.Location = new Point(20, 100);
-        _grid.Size = new Size(740, 320);
-        _grid.ReadOnly = true;
-        _grid.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-        _grid.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
-        _grid.BackgroundColor = Cores.White;
-        _grid.BorderStyle = BorderStyle.None;
-
-        var btnVoltar = new Button
-        {
-            Text = "Voltar",
-            Size = new Size(100, 35),
-            Location = new Point(20, 430),
-            BackColor = Cores.Gray200,
-            ForeColor = Cores.Gray900,
-            FlatStyle = FlatStyle.Flat
-        };
-        btnVoltar.FlatAppearance.BorderSize = 0;
-        btnVoltar.Click += (s, e) => Close();
-
-        Controls.Add(lblTitulo);
-        Controls.Add(_txtBusca);
-        Controls.Add(_grid);
-        Controls.Add(btnVoltar);
-
-        Load += OnFormLoad;
+        Load += OnClienteUCLoad;
     }
 
-    private async void OnFormLoad(object? sender, EventArgs e)
+    private async void OnClienteUCLoad(object? sender, EventArgs e)
     {
         try
         {
-            var dao = new MeuDAO(await Database.Instance.InitializeAsync());
-            var registros = await dao.GetAllAsync();
-
-            _grid.DataSource = registros;
+            var dao = new ClienteDAO(await Database.Instance.InitializeAsync());
+            _grid.DataSource = await dao.GetAllAsync();
         }
         catch (Exception ex)
         {
-            MessageBox.Show($"Nao foi possivel carregar: {ex.Message}", "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            MessageBox.Show($"Não foi possível carregar: {ex.Message}", "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
     }
-
-    private void OnBuscaTextChanged(object? sender, EventArgs e)
-    {
-        // Filtrar registros pelo texto da busca
-    }
 }
 ```
 
-> `OnFormLoad` e `async void` porque o evento nao permite `async Task`. Carregue dados sempre nele (e nao no construtor), para a lista recarregar toda vez que a tela aparece.
+> `ClienteDAO` é um exemplo. Os DAOs seguem o padrão de `BackupDAO`.
 
-> No Exemplo 2, `MeuModel` representa a classe de dominio. Use os models de `Models/` diretamente.
-
-> **Nota sobre o Exemplo 2**: Se usar o Designer do Visual Studio (Passo 2), os controles `_grid` e `_txtBusca` serao declarados no `.Designer.cs` com nomes definidos na janela Properties. Ajuste o nome das variaveis no codigo conforme definido no Designer.
-
----
-
-## 5. Exemplo 3 - Tela com acesso ao banco
-
-### `Forms/ListaForm.cs` (trecho do DAO)
-
-```csharp
-using DialcronWinforms.Data;
-
-private async void OnFormLoad(object? sender, EventArgs e)
-{
-    var dao = new MeuDAO(await Database.Instance.InitializeAsync());
-
-    _grid.DataSource = await dao.GetAllAsync();
-}
-```
-
-O DAO segue o padrao do projeto: recebe a `SQLiteAsyncConnection` no construtor e expoe metodos `async`. Referencia real: `Data/DAO/BackupDAO.cs`.
+### DAO de referência
 
 ```csharp
 using SQLite;
 
 namespace DialcronWinforms.Data.DAO;
 
-public class MeuDAO
+public class ClienteDAO
 {
     private readonly SQLiteAsyncConnection _connection;
 
-    public MeuDAO(SQLiteAsyncConnection connection)
+    public ClienteDAO(SQLiteAsyncConnection connection)
     {
         _connection = connection;
     }
 
-    public Task<List<MeuModel>> GetAllAsync()
+    public Task<List<Cliente>> GetAllAsync()
     {
-        return _connection.Table<MeuModel>().ToListAsync();
+        return _connection.Table<Cliente>().ToListAsync();
     }
 }
 ```
 
-> **Estado atual**: os models (`Models/`) estao prontos. Crie os DAOs para cada entidade seguindo o padrao acima.
+> **Estado atual**: os models (`Models/`) estão prontos. Os DAOs além do `BackupDAO` ainda precisam ser criados.
 
 ---
 
-## 6. Navegacao entre telas
+## 6. Convenções do projeto
 
-Para abrir outra tela a partir de um botao:
+### Código C# (code-behind)
 
-```csharp
-private void OnAbrirTelaClicked(object? sender, EventArgs e)
-{
-    var tela = new OutraTelaForm();
-    tela.ShowDialog();  // Modal (bloqueia a tela atual)
-    // ou
-    tela.Show();        // Nao modal (permite alternar entre telas)
-}
-```
-
-Para voltar:
-
-```csharp
-private void OnVoltarClicked(object? sender, EventArgs e)
-{
-    Close();  // Fecha a tela atual
-}
-```
-
----
-
-## 7. Convencoes do projeto
-
-### Codigo C# (code-behind)
-
-- Indentacao com **tabs** (arquivos `.cs`)
-- Namespace unico no formato `namespace DialcronWinforms.Forms;`
+- Indentação com **4 espaços** nos arquivos `.cs` e `.Designer.cs`
+- Namespace no formato `namespace DialcronWinforms.Controls;`
 - Eventos: `private void OnXxxClicked(object? sender, EventArgs e)`
-- Metodos e variaveis em **camelCase**; privados com prefixo `_` (`_txtNome`, `_btnSalvar`)
-- `async/await` em qualquer operacao com banco
-- Sem ViewModel: o code-behind chama o DAO direto
-- **Sem comentarios** no codigo e **Sem emojis**
+- Campos privados com prefixo `_`
+- `async/await` em qualquer operação com banco
+- Sem ViewModel: o code-behind chama o DAO diretamente
+- Sem comentários desnecessários e sem emojis
 
-### Controles
+### Layout e visual
 
-- Indentacao com **4 espacos** (se houver designer)
-- `Text` com acentuacao correta em textos visiveis
-- Cores sempre via `Cores.Classe` (ver `Cores.cs`); nunca valor fixo
-- `StartPosition = FormStartPosition.CenterScreen` em todas as telas
-- `BackColor = Cores.Creme` como fundo padrao
-- Botoes com `FlatStyle = FlatStyle.Flat` e `FlatAppearance.BorderSize = 0`
+- Toda tela: `Dock = DockStyle.Fill`, `BackColor = Cores.Creme`, `ForeColor = Cores.Gray900`
+- Títulos: `Cores.Primary`, fonte Segoe UI em negrito
+- Textos secundários: `Cores.Gray600`
+- Botões: `ConfigurarBotao` (ver Passo 3)
+- Cores sempre via `Cores.*`; nunca valor fixo como `Color.FromArgb(...)`
+- Logo e ícones ficam em `Resources/` (`Icones/`, `Logos/`)
 
 ### Banco
 
-- Todo acesso passa por um DAO em `Data/DAO/` (nenhum SQL na Form)
+- Todo acesso passa por um DAO em `Data/DAO/` (nenhum SQL na tela)
 - Cada DAO recebe `SQLiteAsyncConnection` via construtor
-- Chamar `Database.Instance.InitializeAsync()` para obter a conexao
+- Obter a conexão com `Database.Instance.InitializeAsync()`
 
 ---
 
-## 8. Checklist antes de commitar
+## 7. Checklist antes de commitar
 
 ```
-[ ] Arquivo em Forms/{Feature}Form.cs criado
-[ ] Designer criado no Visual Studio (Add → Windows Form) ou controles adicionados manualmente
-[ ] Classe herda de Form
-[ ] Text, Size, StartPosition, BackColor configurados
-[ ] Controles com _camelCase e underscore
-[ ] Eventos com OnXxxClicked(object? sender, EventArgs e)
-[ ] Acesso a dados via DAO (nenhum SQL na Form)
-[ ] Cores via Cores.Classe (nenhum valor fixo)
+[ ] UserControl criado em Controls/{Feature}UC.cs
+[ ] Dock = Fill, BackColor = Cores.Creme, AutoScroll = true
+[ ] Botões com ConfigurarBotao (cores da paleta)
+[ ] Cores via Cores.* (nenhum valor fixo)
+[ ] Tela registrada no MainForm (botão do menu ou evento de um pai)
+[ ] Eventos de navegação assinados uma única vez (construtor)
+[ ] Acesso a dados via DAO (nenhum SQL na tela)
 [ ] dotnet build sem erro
 ```
 
 ---
 
-## 9. Erros comuns
+## 8. Erros comuns
 
-| Erro | Causa | Solucao |
+| Erro | Causa | Solução |
 |------|-------|---------|
-| `Form` nao encontrado | Falta using | `using System.Windows.Forms;` (implicito com ImplicitUsings) |
-| `Cores.Primary` nao encontrado | Falta using | `using DialcronWinforms;` ou reference a classe |
-| `Database` nao encontrado | Falta using | `using DialcronWinforms.Data;` |
+| Tela não aparece no painel | Não chamou `NavigationHelper.NavigateTo` | Chame no clique do botão ou no handler do evento |
+| Tela ocupa só parte do painel | Falta `Dock = DockStyle.Fill` | Defina no `InitializeComponent` |
+| Botões com cor padrão do Windows | `ConfigurarBotao` não foi chamado (ou sumiu após editar o Designer) | Chame `ConfigurarBotao(btn)` para cada botão |
+| Clique abre a tela várias vezes e eventos repetem | Evento assinado dentro do clique | Assine no construtor do `MainForm` |
+| `StartPosition` não existe no UserControl | Propriedade de `Form` | Remova; a tela é preenchida pelo painel |
 | `SQLiteConnection` nulo | DAO criado sem `InitializeAsync()` | `new MeuDAO(await Database.Instance.InitializeAsync())` |
-| Tela abre em branco | Dados carregados no construtor | Carregue no evento `Load`, nao no construtor |
-| Estetica quebrada | Valor de cor fixo no codigo | Use `Cores.Classe` do `Cores.cs` |
-| Botao nao faz nada | Evento nao conectado | `btn.Click += OnXxxClicked;` |
+| Tela abre vazia | Dados carregados no construtor | Carregue no `Load` ou no método que exibe a tela |
+| Cor fora da paleta | Valor fixo no código | Use `Cores.Classe` do `Cores.cs` |
