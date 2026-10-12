@@ -1,72 +1,32 @@
 namespace DialcronWinforms.Forms;
 
-public class MainForm : Form
+public partial class MainForm : Form
 {
     public MainForm()
     {
-        Text = "Dialcron";
-        Size = new Size(450, 400);
-        StartPosition = FormStartPosition.CenterScreen;
-        BackColor = Cores.Creme;
+        InitializeComponent();
 
-        var lblTitulo = new Label
-        {
-            Text = "Dialcron",
-            Font = new Font("Segoe UI", 24, FontStyle.Bold),
-            ForeColor = Cores.Primary,
-            AutoSize = true,
-            Location = new Point(160, 40)
-        };
+        btnAgenda.Click += BtnAgenda_Click;
+        btnCadastros.Click += BtnCadastros_Click;
+        btnBackup.Click += BtnBackup_Click;
+    }
 
-        var lblSubtitulo = new Label
-        {
-            Text = "Sistema de agendamentos",
-            Font = new Font("Segoe UI", 12),
-            ForeColor = Cores.Gray600,
-            AutoSize = true,
-            Location = new Point(150, 85)
-        };
+    private void BtnAgenda_Click(object? sender, EventArgs e)
+    {
+        var form = new AgendaForm();
+        form.ShowDialog(this);
+    }
 
-        var btnAgenda = new Button
-        {
-            Text = "Agenda",
-            Size = new Size(200, 45),
-            Location = new Point(125, 140),
-            BackColor = Cores.Primary,
-            ForeColor = Cores.White,
-            FlatStyle = FlatStyle.Flat,
-            Font = new Font("Segoe UI", 12)
-        };
-        btnAgenda.FlatAppearance.BorderSize = 0;
+    private void BtnCadastros_Click(object? sender, EventArgs e)
+    {
+        var form = new CadastrosForm();
+        form.ShowDialog(this);
+    }
 
-        var btnCadastros = new Button
-        {
-            Text = "Cadastros",
-            Size = new Size(200, 45),
-            Location = new Point(125, 200),
-            BackColor = Cores.Primary,
-            ForeColor = Cores.White,
-            FlatStyle = FlatStyle.Flat,
-            Font = new Font("Segoe UI", 12)
-        };
-        btnCadastros.FlatAppearance.BorderSize = 0;
-
-        var btnBackup = new Button
-        {
-            Text = "Backup",
-            Size = new Size(200, 45),
-            Location = new Point(125, 260),
-            BackColor = Cores.Primary,
-            ForeColor = Cores.White,
-            FlatStyle = FlatStyle.Flat,
-            Font = new Font("Segoe UI", 12)
-        };
-        btnBackup.FlatAppearance.BorderSize = 0;
-
-        Controls.Add(lblTitulo);
-        Controls.Add(lblSubtitulo);
-        Controls.Add(btnAgenda);
-        Controls.Add(btnCadastros);
-        Controls.Add(btnBackup);
+    private void BtnBackup_Click(object? sender, EventArgs e)
+    {
+        // TODO: Implementar lógica de backup
+        MessageBox.Show("Funcionalidade de backup em desenvolvimento.", "Backup",
+            MessageBoxButtons.OK, MessageBoxIcon.Information);
     }
 }
