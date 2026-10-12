@@ -38,7 +38,45 @@ Em `Forms/`, crie o arquivo da nova tela:
 
 - `MinhaTelaForm.cs`
 
-### Passo 2 - Estrutura basica
+### Passo 2 - Criar o Designer no Visual Studio
+
+O Visual Studio pode gerar o arquivo `.Designer.cs` automaticamente com os controles visuais. Para isso:
+
+1. No **Solution Explorer**, clique com o botão direito no projeto
+2. Selecione **Add** → **Windows Form**
+3. Nomeie o arquivo como `MinhaTelaForm.cs` (o Visual Studio cria o `.cs` e o `.Designer.cs` juntos)
+4. No **Designer** (tela visual), arraste controles da **Toolbox** (Labels, TextBoxes, Buttons, DataGridView, etc.)
+5. Na janela **Properties** (F4), configure `Name`, `Text`, `Size`, `Location`, `BackColor`, etc.
+6. Para conectar eventos: selecione o controle → na janela Properties clique no ícone de raio (Events) → duplo-clique no evento (ex: `Click`) para gerar o handler
+
+O Visual Studio gera automaticamente no `.Designer.cs`:
+
+```csharp
+partial class MinhaTelaForm
+{
+    private System.ComponentModel.IContainer components = null;
+
+    private Label lblTitulo;
+    private Button btnSalvar;
+
+    protected override void Dispose(bool disposing) { ... }
+
+    private void InitializeComponent()
+    {
+        this.lblTitulo = new Label();
+        this.btnSalvar = new Button();
+        // ... configuracoes dos controles
+        this.Controls.Add(this.lblTitulo);
+        this.Controls.Add(this.btnSalvar);
+    }
+}
+```
+
+> **Importante**: O `.Designer.cs` e gerado pelo Visual Studio. Nao edite manualmente — use a interface visual (Designer) para adicionar, remover ou modificar controles. A logica de negocio fica no `.cs` (code-behind).
+>
+> **Pre-requisito**: O projeto deve abrir corretamente no Visual Studio. Se as telas nao abrirem no Designer, verifique se os eventos `Click` estao conectados no `.cs` (code-behind) — sem eles, os botoes abrem mas nao executam nenhuma acao.
+
+### Passo 4 - Estrutura basica (opcional, se nao usar o Designer)
 
 ```csharp
 namespace DialcronWinforms.Forms;
@@ -55,7 +93,7 @@ public class MinhaTelaForm : Form
 }
 ```
 
-### Passo 3 - Adicionar controles
+### Passo 5 - Adicionar controles manualmente
 
 ```csharp
 public MinhaTelaForm()
@@ -96,7 +134,7 @@ private void OnSalvarClicked(object? sender, EventArgs e)
 }
 ```
 
-### Passo 4 - Se a tela precisa do banco
+### Passo 6 - Se a tela precisa do banco
 
 O singleton `Database` entrega a `SQLiteAsyncConnection`; cada DAO e criado com ela no construtor:
 
@@ -121,7 +159,7 @@ private async void MinhaTelaForm_Load(object? sender, EventArgs e)
 
 Como `Database.InitializeAsync()` e idempotente, pode chamar em qualquer tela. Exemplo real: `Data/DAO/BackupDAO.cs`.
 
-### Passo 5 - Compilar
+### Passo 7 - Compilar
 
 ```bash
 dotnet build
@@ -309,6 +347,8 @@ public class ListaForm : Form
 
 > No Exemplo 2, `MeuModel` representa a classe de dominio. Use os models de `Models/` diretamente.
 
+> **Nota sobre o Exemplo 2**: Se usar o Designer do Visual Studio (Passo 2), os controles `_grid` e `_txtBusca` serao declarados no `.Designer.cs` com nomes definidos na janela Properties. Ajuste o nome das variaveis no codigo conforme definido no Designer.
+
 ---
 
 ## 5. Exemplo 3 - Tela com acesso ao banco
@@ -411,6 +451,7 @@ private void OnVoltarClicked(object? sender, EventArgs e)
 
 ```
 [ ] Arquivo em Forms/{Feature}Form.cs criado
+[ ] Designer criado no Visual Studio (Add → Windows Form) ou controles adicionados manualmente
 [ ] Classe herda de Form
 [ ] Text, Size, StartPosition, BackColor configurados
 [ ] Controles com _camelCase e underscore
