@@ -145,7 +145,9 @@ partial class MainForm
         BackColor = Cores.Creme;
         ClientSize = new Size(900, 650);
         Controls.Add(tlpLayout);
+        FormBorderStyle = FormBorderStyle.FixedSingle;
         ForeColor = Cores.Gray900;
+        MaximizeBox = false;
         MinimumSize = new Size(900, 650);
         Name = "MainForm";
         StartPosition = FormStartPosition.CenterScreen;
