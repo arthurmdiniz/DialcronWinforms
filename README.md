@@ -29,8 +29,12 @@ Models/          # Classes de dominio (9 entidades)
 Data/
   ├── Database.cs     # Conexao SQLite (singleton)
   └── DAO/            # Data Access Objects
-Forms/           # Telas do Windows Forms
-Resources/       # Logo + icone
+Forms/           # MainForm (janela principal com menu lateral)
+Controls/        # Telas (UserControls) carregadas no painel principal
+Navigation/      # NavigationHelper: troca de telas no painel
+Resources/
+  ├── Icones/    # Icones do projeto (favicon usado no exe e na janela)
+  └── Logos/     # Logos usados na interface
 Documentacao/    # Documentos e referencias
 Cores.cs         # Paleta de cores
 ```

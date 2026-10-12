@@ -9,7 +9,7 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
-    <ApplicationIcon>Resources\DialcronSB.ico</ApplicationIcon>
+    <ApplicationIcon>Resources\Icones\favicon.ico</ApplicationIcon>
     <EnableNETAnalyzers>false</EnableNETAnalyzers>
     <AnalysisLevel>none</AnalysisLevel>
   </PropertyGroup>
@@ -22,6 +22,11 @@
     <Compile Remove="Old\**" />
     <EmbeddedResource Remove="Old\**" />
     <None Remove="Old\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\Icones\favicon.ico" LogicalName="favicon.ico" />
+    <EmbeddedResource Include="Resources\Logos\LogoTransparente.png" LogicalName="LogoTransparente.png" />
   </ItemGroup>
 
   <ItemGroup>
