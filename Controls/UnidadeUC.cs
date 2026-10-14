@@ -1,4 +1,6 @@
 using System.ComponentModel;
+using DialcronWinforms.Data;
+using DialcronWinforms.Data.DAO;
 using DialcronWinforms.Models;
 
 namespace DialcronWinforms.Controls;
@@ -7,7 +9,6 @@ public partial class UnidadeUC : UserControl
 {
     private readonly BindingList<Unidade> _unidades = new();
     private Unidade? _selecionado;
-    private int _proximoId = 1;
 
     public UnidadeUC()
     {
@@ -15,6 +16,29 @@ public partial class UnidadeUC : UserControl
 
         dgvUnidades.DataSource = _unidades;
         dgvUnidades.SelectionChanged += DgvUnidades_SelectionChanged;
+        Load += OnUnidadeUCLoad;
+    }
+
+    private async void OnUnidadeUCLoad(object? sender, EventArgs e)
+    {
+        try
+        {
+            var dao = await CriarDaoAsync();
+            var unidades = await dao.GetAllAsync();
+
+            _unidades.Clear();
+            foreach (var unidade in unidades)
+                _unidades.Add(unidade);
+        }
+        catch (Exception ex)
+        {
+            MessageBox.Show($"Não foi possível carregar as unidades: {ex.Message}", "Unidades", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        }
+    }
+
+    private static async Task<UnidadeDAO> CriarDaoAsync()
+    {
+        return new UnidadeDAO(await Database.Instance.InitializeAsync());
     }
 
     private void DgvUnidades_SelectionChanged(object? sender, EventArgs e)
@@ -33,7 +57,7 @@ public partial class UnidadeUC : UserControl
         txtNomeFantasia.Focus();
     }
 
-    private void BtnSalvar_Click(object? sender, EventArgs e)
+    private async void BtnSalvar_Click(object? sender, EventArgs e)
     {
         var nomeFantasia = txtNomeFantasia.Text.Trim();
 
@@ -44,18 +68,60 @@ public partial class UnidadeUC : UserControl
             return;
         }
 
+        try
+        {
+            var dao = await CriarDaoAsync();
+
+            if (_selecionado is null)
+            {
+                var nova = new Unidade();
+                PreencherModelo(nova);
+                await dao.InsertAsync(nova);
+                _unidades.Add(nova);
+                _selecionado = nova;
+                SelecionarNaGrid(nova);
+            }
+            else
+            {
+                PreencherModelo(_selecionado);
+                await dao.UpdateAsync(_selecionado);
+                dgvUnidades.Refresh();
+            }
+        }
+        catch (Exception ex)
+        {
+            MessageBox.Show($"Não foi possível salvar a unidade: {ex.Message}", "Unidades", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        }
+    }
+
+    private async void BtnExcluir_Click(object? sender, EventArgs e)
+    {
         if (_selecionado is null)
         {
-            var nova = new Unidade { IdUnidade = _proximoId++ };
-            PreencherModelo(nova);
-            _unidades.Add(nova);
-            _selecionado = nova;
-            SelecionarNaGrid(nova);
+            MessageBox.Show("Selecione uma unidade na lista para excluir.", "Unidades", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            return;
         }
-        else
+
+        var confirmacao = MessageBox.Show(
+            $"Excluir a unidade \"{_selecionado.NomeFantasia}\"?",
+            "Unidades",
+            MessageBoxButtons.YesNo,
+            MessageBoxIcon.Question);
+
+        if (confirmacao != DialogResult.Yes)
+            return;
+
+        try
         {
-            PreencherModelo(_selecionado);
-            dgvUnidades.Refresh();
+            var dao = await CriarDaoAsync();
+            await dao.DeleteAsync(_selecionado.IdUnidade);
+            _unidades.Remove(_selecionado);
+            LimparSelecao();
+            LimparFormulario();
+        }
+        catch (Exception ex)
+        {
+            MessageBox.Show($"Não foi possível excluir a unidade: {ex.Message}", "Unidades", MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
     }
 
