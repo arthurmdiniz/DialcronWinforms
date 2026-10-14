@@ -20,6 +20,7 @@
 
   <ItemGroup>
     <Compile Remove="Old\**" />
+    <Compile Remove="DialcronWinforms.Tests\**" />
     <EmbeddedResource Remove="Old\**" />
     <None Remove="Old\**" />
   </ItemGroup>
