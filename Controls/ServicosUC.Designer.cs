@@ -48,6 +48,8 @@ partial class ServicoUC
         chkAtivo = new CheckBox();
         btnNovo = new Button();
         btnSalvar = new Button();
+        colId = new DataGridViewTextBoxColumn();
+        colNome = new DataGridViewTextBoxColumn();
         grpLista.SuspendLayout();
         ((System.ComponentModel.ISupportInitialize)dgvServicos).BeginInit();
         grpDados.SuspendLayout();
@@ -93,6 +95,24 @@ partial class ServicoUC
         dgvServicos.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
         dgvServicos.Size = new Size(600, 175);
         dgvServicos.TabIndex = 0;
+        dgvServicos.AutoGenerateColumns = false;
+        dgvServicos.Columns.AddRange(new DataGridViewColumn[] { colId, colNome });
+        // 
+        // colId
+        // 
+        colId.DataPropertyName = "Id";
+        colId.HeaderText = "ID";
+        colId.Name = "colId";
+        colId.ReadOnly = true;
+        colId.FillWeight = 30F;
+        // 
+        // colNome
+        // 
+        colNome.DataPropertyName = "Nome";
+        colNome.HeaderText = "Nome";
+        colNome.Name = "colNome";
+        colNome.ReadOnly = true;
+        colNome.FillWeight = 70F;
         // 
         // grpDados
         // 
@@ -112,7 +132,7 @@ partial class ServicoUC
         grpDados.ForeColor = Color.FromArgb(92, 75, 78);
         grpDados.Location = new Point(15, 262);
         grpDados.Name = "grpDados";
-        grpDados.Size = new Size(624, 258);
+        grpDados.Size = new Size(624, 220);
         grpDados.TabIndex = 2;
         grpDados.TabStop = false;
         grpDados.Text = "Dados";
@@ -122,7 +142,7 @@ partial class ServicoUC
         lblUnidade.AutoSize = true;
         lblUnidade.Font = new Font("Segoe UI", 9F);
         lblUnidade.ForeColor = Color.FromArgb(59, 48, 50);
-        lblUnidade.Location = new Point(12, 28);
+        lblUnidade.Location = new Point(330, 28);
         lblUnidade.Name = "lblUnidade";
         lblUnidade.Size = new Size(51, 15);
         lblUnidade.TabIndex = 0;
@@ -133,9 +153,9 @@ partial class ServicoUC
         cbxUnidade.DropDownStyle = ComboBoxStyle.DropDownList;
         cbxUnidade.Font = new Font("Segoe UI", 9F);
         cbxUnidade.FormattingEnabled = true;
-        cbxUnidade.Location = new Point(12, 46);
+        cbxUnidade.Location = new Point(330, 46);
         cbxUnidade.Name = "cbxUnidade";
-        cbxUnidade.Size = new Size(130, 23);
+        cbxUnidade.Size = new Size(270, 23);
         cbxUnidade.TabIndex = 1;
         // 
         // lblNome
@@ -143,7 +163,7 @@ partial class ServicoUC
         lblNome.AutoSize = true;
         lblNome.Font = new Font("Segoe UI", 9F);
         lblNome.ForeColor = Color.FromArgb(59, 48, 50);
-        lblNome.Location = new Point(156, 28);
+        lblNome.Location = new Point(12, 28);
         lblNome.Name = "lblNome";
         lblNome.Size = new Size(40, 15);
         lblNome.TabIndex = 2;
@@ -152,9 +172,9 @@ partial class ServicoUC
         // txtNome
         // 
         txtNome.Font = new Font("Segoe UI", 9F);
-        txtNome.Location = new Point(156, 46);
+        txtNome.Location = new Point(12, 46);
         txtNome.Name = "txtNome";
-        txtNome.Size = new Size(181, 23);
+        txtNome.Size = new Size(300, 23);
         txtNome.TabIndex = 3;
         // 
         // lblPreco
@@ -162,7 +182,7 @@ partial class ServicoUC
         lblPreco.AutoSize = true;
         lblPreco.Font = new Font("Segoe UI", 9F);
         lblPreco.ForeColor = Color.FromArgb(59, 48, 50);
-        lblPreco.Location = new Point(343, 28);
+        lblPreco.Location = new Point(12, 90);
         lblPreco.Name = "lblPreco";
         lblPreco.Size = new Size(37, 15);
         lblPreco.TabIndex = 4;
@@ -171,9 +191,9 @@ partial class ServicoUC
         // txtPreco
         // 
         txtPreco.Font = new Font("Segoe UI", 9F);
-        txtPreco.Location = new Point(343, 46);
+        txtPreco.Location = new Point(12, 108);
         txtPreco.Name = "txtPreco";
-        txtPreco.Size = new Size(115, 23);
+        txtPreco.Size = new Size(150, 23);
         txtPreco.TabIndex = 5;
         // 
         // lblTempo
@@ -181,7 +201,7 @@ partial class ServicoUC
         lblTempo.AutoSize = true;
         lblTempo.Font = new Font("Segoe UI", 9F);
         lblTempo.ForeColor = Color.FromArgb(59, 48, 50);
-        lblTempo.Location = new Point(472, 28);
+        lblTempo.Location = new Point(180, 90);
         lblTempo.Name = "lblTempo";
         lblTempo.Size = new Size(43, 15);
         lblTempo.TabIndex = 12;
@@ -190,9 +210,9 @@ partial class ServicoUC
         // txtTempo
         // 
         txtTempo.Font = new Font("Segoe UI", 9F);
-        txtTempo.Location = new Point(472, 46);
+        txtTempo.Location = new Point(180, 108);
         txtTempo.Name = "txtTempo";
-        txtTempo.Size = new Size(88, 23);
+        txtTempo.Size = new Size(150, 23);
         txtTempo.TabIndex = 13;
         // 
         // chkAtivo
@@ -202,7 +222,7 @@ partial class ServicoUC
         chkAtivo.CheckState = CheckState.Checked;
         chkAtivo.Font = new Font("Segoe UI", 9F);
         chkAtivo.ForeColor = Color.FromArgb(59, 48, 50);
-        chkAtivo.Location = new Point(566, 46);
+        chkAtivo.Location = new Point(348, 110);
         chkAtivo.Name = "chkAtivo";
         chkAtivo.Size = new Size(54, 19);
         chkAtivo.TabIndex = 18;
@@ -215,7 +235,7 @@ partial class ServicoUC
         btnNovo.FlatStyle = FlatStyle.Flat;
         btnNovo.Font = new Font("Segoe UI", 9F);
         btnNovo.ForeColor = Color.FromArgb(59, 48, 50);
-        btnNovo.Location = new Point(12, 210);
+        btnNovo.Location = new Point(12, 160);
         btnNovo.Name = "btnNovo";
         btnNovo.Size = new Size(130, 32);
         btnNovo.TabIndex = 19;
@@ -229,7 +249,7 @@ partial class ServicoUC
         btnSalvar.FlatStyle = FlatStyle.Flat;
         btnSalvar.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
         btnSalvar.ForeColor = Color.FromArgb(255, 255, 255);
-        btnSalvar.Location = new Point(152, 210);
+        btnSalvar.Location = new Point(152, 160);
         btnSalvar.Name = "btnSalvar";
         btnSalvar.Size = new Size(130, 32);
         btnSalvar.TabIndex = 20;

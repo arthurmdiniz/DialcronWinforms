@@ -41,14 +41,8 @@ public partial class ServicoUC : UserControl
 
     private void BtnSalvar_Click(object? sender, EventArgs e)
     {
-        var nome = txtNome.Text.Trim();
-
-        if (string.IsNullOrWhiteSpace(nome))
-        {
-            MessageBox.Show("Informe o nome do Serviço.", "Serviços", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-            txtNome.Focus();
+        if (!ValidarFormulario())
             return;
-        }
 
         if (_selecionado is null)
         {
@@ -63,6 +57,35 @@ public partial class ServicoUC : UserControl
             PreencherModelo(_selecionado);
             dgvServicos.Refresh();
         }
+    }
+
+    private bool ValidarFormulario()
+    {
+        if (string.IsNullOrWhiteSpace(txtNome.Text))
+        {
+            Alertar("Informe o nome do Serviço.", txtNome);
+            return false;
+        }
+
+        if (FuncoesGerais.LerDecimal(txtPreco.Text) is not > 0)
+        {
+            Alertar("Informe um preço válido.", txtPreco);
+            return false;
+        }
+
+        if (FuncoesGerais.LerInteiro(txtTempo.Text) is not > 0)
+        {
+            Alertar("Informe a duração em minutos.", txtTempo);
+            return false;
+        }
+
+        return true;
+    }
+
+    private static void Alertar(string mensagem, Control campo)
+    {
+        MessageBox.Show(mensagem, "Serviços", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+        campo.Focus();
     }
 
     private void LimparSelecao()
@@ -89,7 +112,7 @@ public partial class ServicoUC : UserControl
         cbxUnidade.SelectedItem = _unidades.FirstOrDefault(u => u.IdUnidade == s.Unidade);
         txtNome.Text = s.Nome;
         txtPreco.Text = s.Preco.ToString();
-        txtTempo.Text = s.Tempo.ToString();
+        txtTempo.Text = s.DuracaoMinutos.ToString();
         chkAtivo.Checked = s.Ativo != "N";
     }
 
@@ -97,8 +120,8 @@ public partial class ServicoUC : UserControl
     {
         s.Unidade = (cbxUnidade.SelectedItem as Unidade)?.IdUnidade ?? 0;
         s.Nome = txtNome.Text.Trim();
-        s.Preco = (double)FuncoesGerais.LerDecimal(txtPreco.Text);
-        s.Tempo = FuncoesGerais.LerInteiro(txtTempo.Text);
+        s.Preco = (double)(FuncoesGerais.LerDecimal(txtPreco.Text) ?? 0m);
+        s.DuracaoMinutos = FuncoesGerais.LerInteiro(txtTempo.Text) ?? 0;
 
         s.Ativo = chkAtivo.Checked ? "S" : "N";
     }
