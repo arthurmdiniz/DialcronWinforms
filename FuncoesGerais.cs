@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using System.Globalization;
 
 namespace DialcronWinforms;
 
@@ -9,6 +10,23 @@ public static class FuncoesGerais
     {
         var digits = OnlyDigits(texto);
         return int.TryParse(digits, out var valor) ? valor : null;
+    }
+
+    public static decimal? LerDecimal(string texto)
+    {
+        if (string.IsNullOrWhiteSpace(texto)) return null;
+        var raw = new string(texto.Where(c => char.IsDigit(c) || c == ',' || c == '.').ToArray());
+        if (string.IsNullOrWhiteSpace(raw)) return null;
+        var s = raw.Replace(',', '.');
+        var dotCount = s.Count(c => c == '.');
+        if (dotCount > 1)
+        {
+            var first = s.IndexOf('.');
+            s = s.Substring(0, first + 1) + s.Substring(first + 1).Replace(".", string.Empty);
+        }
+        if (decimal.TryParse(s, NumberStyles.Number, CultureInfo.InvariantCulture, out var result))
+            return result;
+        return null;
     }
 
     public static string OnlyDigits(string s) => new string(s?.Where(char.IsDigit).ToArray() ?? Array.Empty<char>());

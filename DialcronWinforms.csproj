@@ -35,6 +35,9 @@
       <Link>DialcronSB_PADRAO.db</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <Compile Update="Controls\ServicosUC.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
     <None Update="Resources\DialcronSB.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

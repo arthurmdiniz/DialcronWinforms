@@ -16,4 +16,5 @@ public class Servico
     public int DuracaoMinutos { get; set; }
 
     public string? Ativo { get; set; }
+    public object Tempo { get; internal set; }
 }
