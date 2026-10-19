@@ -6,13 +6,13 @@
 |---|---|
 | `main` | Código em produção. Cada commit nela corresponde a uma versão publicada. |
 | `develop` | Integração das funcionalidades já concluídas, para a próxima versão. |
-| `feature/*` (ex.: `DWF-42`) | Uma branch por issue. Sai de `develop` e volta para `develop` via PR. |
+| `feat/*` (ex.: `feat/DWF-42`) | Uma branch por issue. Sai de `develop` e volta para `develop` via PR. |
 | `release/*` (ex.: `release/1.1.0`) | Preparação de uma versão: ajustes finais e versão no `.csproj`. Sai de `develop` e é mesclada em `main` e em `develop`. |
 | `hotfix/*` (ex.: `hotfix/1.0.1`) | Correção urgente em produção. Sai de `main` e é mesclada em `main` e em `develop`. |
 
 ## Fluxo de uma funcionalidade
 
-1. Criar a branch a partir de `develop`: `git switch -c DWF-XX develop`
+1. Criar a branch a partir de `develop`: `git switch -c feat/DWF-XX develop`
 2. Desenvolver e commitar na branch da issue.
 3. Abrir um Pull Request para `develop`.
 4. Após aprovação, mesclar em `develop` e excluir a branch.
