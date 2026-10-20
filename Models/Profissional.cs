@@ -2,6 +2,7 @@ using SQLite;
 
 namespace DialcronWinforms.Models;
 
+[Table("bel_profissional")]
 public class Profissional
 {
     [PrimaryKey, AutoIncrement]
