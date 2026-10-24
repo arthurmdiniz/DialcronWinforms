@@ -1,5 +1,6 @@
 using System.ComponentModel;
 using System.Globalization;
+using SQLite;
 using DialcronWinforms.Data;
 using DialcronWinforms.Data.DAO;
 using DialcronWinforms.Forms;
@@ -170,9 +171,6 @@ public partial class AgendaUC : UserControl
         try
         {
             var conexao = await Database.Instance.InitializeAsync();
-            var atendimentoDao = new AtendimentoDAO(conexao);
-            var belDao = new BelAtendimentoDAO(conexao);
-            var servicoDao = new AtendimentoServicoDAO(conexao);
 
             if (_selecionado is null)
             {
@@ -184,23 +182,29 @@ public partial class AgendaUC : UserControl
                 };
                 PreencherModelo(novo);
 
-                await atendimentoDao.InsertAsync(novo.Cadastro);
-                novo.Belo.Atendimento = novo.Cadastro.Id;
-                await belDao.InsertAsync(novo.Belo);
-                await InserirServicosAsync(servicoDao, novo);
-
-                await FiltrarPorDiaAsync(dtpDataAgenda.Value.Date);
+                await conexao.RunInTransactionAsync(tx =>
+                {
+                    tx.Insert(novo.Cadastro);
+                    novo.Belo.Atendimento = novo.Cadastro.Id;
+                    tx.Insert(novo.Belo);
+                    InserirServicos(tx, novo);
+                });
             }
             else
             {
-                PreencherModelo(_selecionado);
-                await atendimentoDao.UpdateAsync(_selecionado.Cadastro);
-                await belDao.UpdateAsync(_selecionado.Belo);
-                await servicoDao.DeleteByAtendimentoAsync(_selecionado.Belo.Id);
-                await InserirServicosAsync(servicoDao, _selecionado);
+                var atual = _selecionado;
+                PreencherModelo(atual);
 
-                await FiltrarPorDiaAsync(dtpDataAgenda.Value.Date);
+                await conexao.RunInTransactionAsync(tx =>
+                {
+                    tx.Update(atual.Cadastro);
+                    tx.Update(atual.Belo);
+                    tx.Table<AtendimentoServico>().Delete(s => s.Atendimento == atual.Belo.Id);
+                    InserirServicos(tx, atual);
+                });
             }
+
+            await FiltrarPorDiaAsync(dtpDataAgenda.Value.Date);
         }
         catch (Exception ex)
         {
@@ -208,11 +212,11 @@ public partial class AgendaUC : UserControl
         }
     }
 
-    private static async Task InserirServicosAsync(AtendimentoServicoDAO servicoDao, AgendaItem item)
+    private static void InserirServicos(SQLiteConnection tx, AgendaItem item)
     {
         foreach (var servicoId in item.ServicosIds)
         {
-            await servicoDao.InsertAsync(new AtendimentoServico
+            tx.Insert(new AtendimentoServico
             {
                 Atendimento = item.Belo.Id,
                 Servico = servicoId,
@@ -240,9 +244,15 @@ public partial class AgendaUC : UserControl
         try
         {
             var conexao = await Database.Instance.InitializeAsync();
-            await new AtendimentoServicoDAO(conexao).DeleteByAtendimentoAsync(_selecionado.Belo.Id);
-            await new BelAtendimentoDAO(conexao).DeleteAsync(_selecionado.Belo.Id);
-            await new AtendimentoDAO(conexao).DeleteAsync(_selecionado.Cadastro.Id);
+            var belId = _selecionado.Belo.Id;
+            var cadId = _selecionado.Cadastro.Id;
+
+            await conexao.RunInTransactionAsync(tx =>
+            {
+                tx.Table<AtendimentoServico>().Delete(s => s.Atendimento == belId);
+                tx.Delete<BelAtendimento>(belId);
+                tx.Delete<Atendimento>(cadId);
+            });
 
             LimparSelecao();
             await FiltrarPorDiaAsync(dtpDataAgenda.Value.Date);
