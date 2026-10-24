@@ -408,7 +408,7 @@ partial class AgendaUC
         btnNovo.FlatStyle = FlatStyle.Flat;
         btnNovo.Font = new Font("Segoe UI", 9F);
         btnNovo.ForeColor = Cores.PrimaryDarkText;
-        btnNovo.Location = new Point(12, 368);
+        btnNovo.Location = new Point(65, 368);
         btnNovo.Name = "btnNovo";
         btnNovo.Size = new Size(150, 32);
         btnNovo.TabIndex = 19;
@@ -422,7 +422,7 @@ partial class AgendaUC
         btnSalvar.FlatStyle = FlatStyle.Flat;
         btnSalvar.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
         btnSalvar.ForeColor = Cores.White;
-        btnSalvar.Location = new Point(172, 368);
+        btnSalvar.Location = new Point(225, 368);
         btnSalvar.Name = "btnSalvar";
         btnSalvar.Size = new Size(130, 32);
         btnSalvar.TabIndex = 20;
@@ -436,7 +436,7 @@ partial class AgendaUC
         btnExcluir.FlatStyle = FlatStyle.Flat;
         btnExcluir.Font = new Font("Segoe UI", 9F);
         btnExcluir.ForeColor = Cores.PrimaryDarkText;
-        btnExcluir.Location = new Point(312, 368);
+        btnExcluir.Location = new Point(365, 368);
         btnExcluir.Name = "btnExcluir";
         btnExcluir.Size = new Size(130, 32);
         btnExcluir.TabIndex = 21;
