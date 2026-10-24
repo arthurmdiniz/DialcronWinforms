@@ -2,6 +2,7 @@ using SQLite;
 
 namespace DialcronWinforms.Models;
 
+[Table("cad_cliente")]
 public class Cliente
 {
     [PrimaryKey, AutoIncrement]
