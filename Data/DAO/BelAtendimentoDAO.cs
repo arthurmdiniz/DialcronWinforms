@@ -12,6 +12,18 @@ public class BelAtendimentoDAO
         _connection = connection;
     }
 
+    public async Task<List<BelAtendimento>> GetAllAsync()
+    {
+        return await _connection.Table<BelAtendimento>().ToListAsync();
+    }
+
+    public async Task<BelAtendimento?> GetByIdAsync(int id)
+    {
+        return await _connection.Table<BelAtendimento>()
+            .Where(b => b.Id == id)
+            .FirstOrDefaultAsync();
+    }
+
     public async Task<List<BelAtendimento>> GetByDataAsync(DateTime data)
     {
         var prefixo = data.ToString("yyyy-MM-dd");

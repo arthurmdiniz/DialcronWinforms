@@ -24,15 +24,6 @@ public class AtendimentoDAO
             .FirstOrDefaultAsync();
     }
 
-    public async Task<List<Atendimento>> GetByDataAsync(DateTime data)
-    {
-        var prefixo = data.ToString("yyyy-MM-dd");
-
-        return await _connection.Table<Atendimento>()
-            .Where(a => a.DtaCriacao != null && a.DtaCriacao.StartsWith(prefixo))
-            .ToListAsync();
-    }
-
     public async Task<int> InsertAsync(Atendimento atendimento)
     {
         return await _connection.InsertAsync(atendimento);
