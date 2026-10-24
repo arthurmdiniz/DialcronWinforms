@@ -1,149 +1,110 @@
-# Plano de Reinstalação do Ambiente - DialcronSB
+﻿# Plano de Ambiente para Desenvolvimento - DialcronWinforms
 
-Requisito: formatação do PC. Este documento cobre desde o setup zero
-até o app rodando em emulador Android + Windows, tudo via linha de comando.
+Este documento reúne o passo a passo para preparar um ambiente Windows para desenvolver, compilar e executar o projeto DialcronWinforms.
 
-## 0. Antes de formatar
+## 1. Requisitos mínimos
 
-- Commit + push: `git add -A && git commit -m "..." && git push`
-  (confirmar que `git status` retorna "up to date")
-- Backup dos secrets Android (necessários p/ APK Release assinado):
-  `ANDROID_KEYSTORE_BASE64`, `ANDROID_KEYSTORE_PASSWORD`, `ANDROID_KEY_ALIAS`, `ANDROID_KEY_PASSWORD`
-- Backup de credenciais/senhas (GitHub PAT, e-mail)
-- Anotar a lista de software instalado (ver seção 1) para reinstalar
+- Windows 10/11
+- Git
+- .NET SDK 10
+- Visual Studio 2022 ou VS Code com extensão C#
 
-## 1. Pós-Formatação - Instalação das Ferramentas
+## 2. Instalar ferramentas
 
-| Software | Versão | Motivo |
-|---|---|---|
-| Git for Windows | última | trabalhar com o repo |
-| .NET SDK | 10.x (ex.: 10.0.302) | compilar MAUI/.NET 10 |
-| Visual Studio 18 Community | última | IDE + tooling Android/emulador |
-| JDK (Adoptium) | 21 LTS | requisito do target Android .NET 10 (API 36) |
-| Workload MAUI | via `dotnet workload install maui` | framework do projeto |
+### Git
 
-Comandos:
-```bash
+```powershell
 winget install Git.Git
-winget install Microsoft.DotNet.SDK.10
-# JDK: baixar Adoptium 21 (ex.: https://adoptium.net) e instalar
-# VS: baixar visualstudio.com + VS Installer
-dotnet workload install maui --ignore-failed-sources
 ```
 
-Demais dependências (restauradas via NuGet, sem instalação manual):
-- sqlite-net-pcl, Plugin.Maui.Calendar, Microsoft.Maui.Controls
+### .NET SDK 10
 
-## 2. Clonar o Repositório
+```powershell
+winget install Microsoft.DotNet.SDK.10
+```
+
+### Visual Studio 2022 (opcional, mas recomendado)
+
+Instale o Visual Studio Community com carga de trabalho:
+
+- Desenvolvimento para Desktop com .NET
+- .NET desktop development
+
+## 3. Clonar o repositório
 
 ```bash
-git clone https://github.com/arthurmdiniz/DialcronSB.git
-cd DialcronSB
+git clone https://github.com/arthurmdiniz/DialcronWinforms.git
+cd DialcronWinforms
 ```
 
-## 3. Instalar Android SDK (base) - via MSBuild do próprio MAUI
+## 4. Restaurar dependências
 
-Parte do .NET Android já traz o installer. Executar de `C:\Git\DialcronSB`:
-
-```powershell
-dotnet build DialcronSB\DialcronSB.csproj -f net10.0-android -t:InstallAndroidDependencies `
-  -p:AndroidSdkDirectory="$env:LOCALAPPDATA\Android\Sdk" `
-  -p:JavaSdkDirectory="C:\Program Files\Microsoft\jdk-21.0.9.10-hotspot" `
-  -p:AcceptAndroidSDKLicenses=true
-# (ajustar o caminho do JDK conforme a instalação)
-```
-
-Instala: platform-tools, platforms;android-36, build-tools e cmdline-tools (sdkmanager/avdmanager).
-
-## 4. Instalar Emulador + System Image
-
-```powershell
-$sdk = "$env:LOCALAPPDATA\Android\Sdk"
-$sdkman = Get-ChildItem "$sdk\cmdline-tools\*\bin\sdkmanager.bat" | Select-Object -First 1
-& $sdkman.FullName "emulator"
-& $sdkman.FullName "system-images;android-36;google_apis;x86_64"
-```
-
-(~1,5-2 GB de download)
-
-## 5. Criar o AVD
-
-```powershell
-$avdman = Join-Path (Split-Path $sdkman.FullName) "avdmanager.bat"
-"no" | & $avdman create avd -n DialcronAVD -k "system-images;android-36;google_apis;x86_64" -d pixel_7
-```
-
-## 6. Aceleração do Emulador (Hypervisor Platform) - Admin
-
-```powershell
-# PowerShell como Administrador
-Enable-WindowsOptionalFeature -Online -FeatureName HypervisorPlatform -NoRestart
-# reiniciar o PC
-# validar:
-& "$sdk\emulator\emulator-check.exe" accel
-```
-
-## 7. Variáveis de Ambiente (usuário)
-
-```powershell
-[Environment]::SetEnvironmentVariable('ANDROID_HOME', "$env:LOCALAPPDATA\Android\Sdk", 'User')
-[Environment]::SetEnvironmentVariable('JAVA_HOME',  'C:\Program Files\Microsoft\jdk-21.0.9.10-hotspot', 'User')
-```
-
-E apontar o VS para o SDK adicionando no `DialcronSB\DialcronSB.csproj.user`
-(arquivo local, não vai pro git):
-
-```xml
-<Project>
-  <PropertyGroup>
-    <ActiveDebugFramework>net10.0-android</ActiveDebugFramework>
-    <AndroidSdkDirectory>C:\Users\<seu>\AppData\Local\Android\Sdk</AndroidSdkDirectory>
-    <JavaSdkDirectory>C:\Program Files\Microsoft\jdk-21.0.9.10-hotspot</JavaSdkDirectory>
-  </PropertyGroup>
-</Project>
-```
-
-## 8. Restore + Compilação (Windows + Android)
-
-```powershell
-cd C:\Git\DialcronSB\DialcronSB
+```bash
 dotnet restore
-dotnet build -f net10.0-windows10.0.19041.0
-dotnet build -f net10.0-android
 ```
 
-## 9. Rodar no Emulador
+## 5. Compilar
 
-```powershell
-# iniciar o emulador (pode ficar aberto)
-& "$env:LOCALAPPDATA\Android\Sdk\emulator\emulator.exe" -avd DialcronAVD
-
-# em outro terminal, deploy + run
-cd C:\Git\DialcronSB\DialcronSB
-dotnet run -f net10.0-android
-# ou no VS: selecionar o dispositivo "DialcronAVD" no dropdown e F5
+```bash
+dotnet build
 ```
 
-## 10. Publicação Standalone (Windows) - opcional
+## 6. Executar a aplicação
 
-```powershell
-cd C:\Git\DialcronSB\DialcronSB
-.\publish.ps1   # ou: dotnet publish -f net10.0-windows10.0.19041.0 -c Release -o publish
+### Via CLI
+
+```bash
+dotnet run --project DialcronWinforms.csproj
 ```
 
-> Nota: o `publish/DialcronSBDB.db` é versionado no git e funciona como
-> "banco fonte" — ele vem no clone já atualizado.
+### Via Visual Studio
 
-## Checklist final
+- Abra `DialcronWinforms.sln`
+- Selecione a solução principal
+- Pressione `F5`
 
-- [ ] Git + repo clonado e `git status` limpo
-- [ ] .NET SDK 10 + workload maui instalados
-- [ ] JDK 21 instalado
-- [ ] Android SDK base instalado (`InstallAndroidDependencies`)
-- [ ] Emulador + system image instalados
-- [ ] AVD `DialcronAVD` criado
-- [ ] HypervisorPlatform ativo (após reboot)
-- [ ] `ANDROID_HOME` / `JAVA_HOME` configurados
-- [ ] `csproj.user` com `AndroidSdkDirectory`
-- [ ] Build Windows e Android OK
-- [ ] App rodou no emulador
+## 7. Estrutura e comportamento do projeto
+
+- O projeto usa Windows Forms (`net10.0-windows`)
+- A navegação é feita por `UserControl` dentro do painel principal
+- A camada de acesso a dados fica em `Data/DAO/`
+- A base local é SQLite
+- O seed padrão fica em `Documentacao/DialcronSB_PADRAO.db`
+
+## 8. Banco de dados
+
+Ao iniciar a aplicação, o sistema cria o banco de trabalho automaticamente caso ainda não exista. O arquivo de seed é copiado para o diretório de execução quando necessário.
+
+### Observações
+
+- Não edite o arquivo seed diretamente em produção
+- Para resetar o ambiente local, apague o arquivo `DialcronSBDB.db` gerado e reinicie a aplicação
+- O backup/restore pode ser feito pela interface do sistema
+
+## 9. Validação do ambiente
+
+Use os comandos abaixo para verificar se o setup está funcionando:
+
+```bash
+dotnet --info
+dotnet restore
+dotnet build
+dotnet test --nologo
+```
+
+## 10. Checklist final
+
+- [ ] Git instalado
+- [ ] .NET 10 SDK instalado
+- [ ] Repositório clonado
+- [ ] `dotnet restore` concluído
+- [ ] `dotnet build` concluído
+- [ ] `dotnet test --nologo` concluído
+- [ ] Aplicação executando localmente
+
+## 11. Documentação relacionada
+
+- [README.md](../README.md)
+- [SETUP.md](../SETUP.md)
+- [CriacaoDeTelas.md](CriacaoDeTelas.md)
+- [TestesUnitarios.md](TestesUnitarios.md)

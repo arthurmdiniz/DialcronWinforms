@@ -1,91 +1,98 @@
-# DialcronWinforms - Guia de Configuracao
+# DialcronWinforms - Guia de Configuração
 
-## Pre-requisitos
+## Pré-requisitos
 
+- Windows 10/11
 - [.NET 10 SDK](https://dotnet.microsoft.com/download)
-- [Visual Studio 2022](https://visualstudio.microsoft.com/) (recomendado) ou [VS Code](https://code.visualstudio.com/)
+- [Visual Studio 2022](https://visualstudio.microsoft.com/) ou [VS Code](https://code.visualstudio.com/)
 - Git
 
-## Como configurar o ambiente
+> Este projeto é um aplicativo Windows Forms; ele depende do .NET para Windows e não é executado nativamente em Linux/macOS.
 
-### 1. Clonar o repositorio
+## 1. Clonar o repositório
 
 ```bash
-git clone <url-do-repositorio>
+git clone https://github.com/arthurmdiniz/DialcronWinforms.git
 cd DialcronWinforms
 ```
 
-### 2. Abrir o projeto
+## 2. Abrir o projeto
 
-#### Visual Studio (recomendado)
-- Abrir `DialcronWinforms.sln`
+### Visual Studio (recomendado)
 
-#### VS Code
-- Abrir a pasta do projeto
-- Instalar extensao **C# Dev Kit**
-- F5 para compilar e debugar
+- Abra o arquivo `DialcronWinforms.sln`
+- Restaure os pacotes ao abrir a solução
+- Pressione `F5` para rodar
 
-### 3. Restaurar pacotes NuGet
+### VS Code
+
+- Abra a pasta do projeto
+- Instale a extensão **C# Dev Kit**
+- Selecione a solução e use o debug do .NET
+
+## 3. Restaurar dependências
 
 ```bash
 dotnet restore
 ```
 
-### 4. Compilar
+## 4. Compilar
 
 ```bash
 dotnet build
 ```
 
-### 5. Executar
+## 5. Executar
 
 ```bash
-dotnet run
+dotnet run --project DialcronWinforms.csproj
 ```
 
-## Estrutura do projeto
+Ou, no Visual Studio, execute a solução diretamente.
 
-```
-Models/          # Classes de dominio (9 entidades)
-Data/
-  ├── Database.cs     # Conexao SQLite (singleton)
-  └── DAO/            # Data Access Objects
-Forms/           # Telas do Windows Forms
-Resources/       # Seed do banco + logo
-Cores.cs         # Paleta de cores
-```
+## Convenções de código
 
-## convencoes de codigo
-
-- Indentacao: tabs (`.cs`)
+- Indentação: tabs em arquivos `.cs`
 - Models: substantivos no singular (`Cliente`, `Servico`)
 - DAOs: `{NomeModel}DAO` (`ClienteDAO`, `ServicoDAO`)
-- Metodos CRUD: `GetAllAsync`, `GetByIdAsync`, `InsertAsync`, `UpdateAsync`, `DeleteAsync`
-- Propriedades: PascalCase
-- Variaveis locais: camelCase
-- Privados: `_camelCase` com underscore
+- Métodos CRUD: `GetAllAsync`, `GetByIdAsync`, `InsertAsync`, `UpdateAsync`, `DeleteAsync`
+- Propriedades: `PascalCase`
+- Variáveis locais: `camelCase`
+- Campos privados: `_camelCase`
 
-## Banco de Dados
+## Banco de dados
 
-- SQLite com 9 tabelas (`cad_*` e `bel_*`)
-- Seed original: `Documentacao/DialcronSB_PADRAO.db` (versionado, imutavel)
-- Banco de trabalho: criado automaticamente no primeiro uso ao lado do .exe
-- Para resetar: apague o banco de trabalho e reinicie o app
-- Backup: botao na tela principal (VACUUM INTO)
+- Banco: SQLite
+- Seed oficial: `Documentacao/DialcronSB_PADRAO.db`
+- Banco de trabalho: criado automaticamente no primeiro uso na pasta de execução
+- Para resetar, apague o arquivo do banco e reinicie a aplicação
+- Backup e restore: disponíveis pela tela principal do sistema
 
-## Como contribuir
+## Testes
+
+```bash
+dotnet test --nologo
+```
+
+## Fluxo de contribuição
 
 ### Padrão de branches
 
-Formato: `DWF-[numero-da-issue]`
+Use nomes no formato:
 
-Exemplos:
-- `DWF-1` - Issue 1
-- `DWF-2` - Issue 2
+- `DWF-1`
+- `DWF-42`
 
-### Passos
+### Recomendação de fluxo
 
-1. Crie uma branch a partir da issue: `git checkout -b DWF-1`
-2. Desenvolva e teste
+1. Crie uma branch para a issue ou tarefa
+2. Desenvolva e teste localmente
 3. Abra um Pull Request usando o template do repositório
-4. Após aprovado, faça merge usando o template de merge
+4. Solicite revisão e faça merge com a branch principal conforme o padrão do projeto
+
+## Documentação adicional
+
+- [README.md](README.md)
+- [Documentacao/CriacaoDeTelas.md](Documentacao/CriacaoDeTelas.md)
+- [Documentacao/TestesUnitarios.md](Documentacao/TestesUnitarios.md)
+- [Documentacao/GitFlow.md](Documentacao/GitFlow.md)

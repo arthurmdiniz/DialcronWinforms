@@ -1,66 +1,50 @@
-# Como Criar Testes Unitários
+﻿# Como criar testes unitários
 
-Guia para escrever testes unitários no DialcronWinforms. Os testes ficam no projeto `DialcronWinforms.Tests` e cobrem a camada de dados (`Data/DAO/`) e as funções de apoio.
+Este guia descreve a abordagem atual do projeto para testes automatizados no `DialcronWinforms`. Os testes ficam no projeto `DialcronWinforms.Tests` e exercitam principalmente a camada de acesso a dados (`Data/DAO/`).
 
-> Este guia depende do PR #34 (`DWF-28`), que cria o projeto de testes. Antes de ele ser mergeado, os arquivos de exemplo só existem na branch `DWF-28`.
+## 1. Estrutura do projeto de testes
 
----
-
-## 1. O que testar
-
-| Alvo | Testar? | Motivo |
-|------|---------|--------|
-| DAOs (`Data/DAO/`) | Sim | Recebem `SQLiteAsyncConnection` no construtor, então usam um banco temporário |
-| `FuncoesGerais` | Sim | Funções puras, sem banco nem UI |
-| `Database` | Não | Singleton com caminho fixo; não dá para isolar |
-| Telas (`Controls/`, `Forms/`) | Não | Testadas manualmente; a integração com o DAO é validada na issue de integração |
-
----
-
-## 2. Estrutura do projeto de testes
-
-```
+```text
 DialcronWinforms.Tests/
 ├── DialcronWinforms.Tests.csproj
 ├── Support/
-│   └── SqliteTestDatabase.cs     # helper: banco SQLite temporário
+│   └── SqliteTestDatabase.cs
 └── Data/
-    └── UnidadeDAOTests.cs        # um arquivo por DAO
+    └── UnidadeDAOTests.cs
 ```
 
-Padrões de nomenclatura:
+### Convenções
 
 | Item | Padrão | Exemplo |
 |------|--------|---------|
-| Arquivo | `{Nome}DAOTests.cs` | `ClienteDAOTests.cs` |
+| Arquivo | `{Nome}DAOTests.cs` | `UnidadeDAOTests.cs` |
 | Namespace | `DialcronWinforms.Tests.Data` | `namespace DialcronWinforms.Tests.Data;` |
-| Classe | `{Nome}DAOTests` | `ClienteDAOTests` |
-| Método de teste | `{Metodo}_{Cenario}_{ResultadoEsperado}` | `GetByIdAsync_ComIdInexistente_RetornaNull` |
+| Classe | `{Nome}DAOTests` | `UnidadeDAOTests` |
+| Método | `{Metodo}_{Cenario}_{ResultadoEsperado}` | `GetByIdAsync_ComIdInexistente_RetornaNull` |
 
----
+## 2. O que testar
 
-## 3. O helper `SqliteTestDatabase`
+| Alvo | Status | Motivo |
+|------|--------|--------|
+| `Data/DAO` | Sim | São os pontos de lógica de persistência e mapeamento |
+| `FuncoesGerais` | Sim, quando existir | Funções puras e sem dependência de UI |
+| `Database` | Não | O singleton pode depender do caminho e do ambiente local |
+| `Controls`/`Forms` | Não em unit tests | A validação visual e de integração é manual |
 
-Cria um arquivo SQLite em `%TEMP%`, com nome único, e o remove ao final do teste. Cada teste recebe um banco novo, então um teste não interfere no outro.
+## 3. Helper de banco de testes
+
+O projeto já inclui `SqliteTestDatabase`, que cria um arquivo SQLite temporário em `%TEMP%` para cada execução. Isso permite o isolamento entre testes sem mexer no banco real da aplicação.
 
 ```csharp
 var db = await SqliteTestDatabase.CreateAsync();
 await db.Connection.CreateTableAsync<Unidade>();
 ```
 
-> Não use o `DialcronSBDB.db` nem o `DialcronSB_PADRAO.db` nos testes. Eles são o banco de trabalho e o seed.
+> Nunca use `DialcronSBDB.db` ou `DialcronSB_PADRAO.db` diretamente em testes automatizados.
 
----
+## 4. Padrão para testes de DAO
 
-## 4. Passo a passo para criar os testes de um DAO
-
-### Passo 1 - Criar o arquivo
-
-Crie `DialcronWinforms.Tests/Data/{Nome}DAOTests.cs`.
-
-### Passo 2 - Preparar o banco em `InitializeAsync` e `DisposeAsync`
-
-A classe implementa `IAsyncLifetime`. O xUnit chama `InitializeAsync` antes de cada teste e `DisposeAsync` depois.
+A classe de teste implementa `IAsyncLifetime` para preparar o banco antes e limpar após cada execução.
 
 ```csharp
 public class UnidadeDAOTests : IAsyncLifetime
@@ -82,11 +66,9 @@ public class UnidadeDAOTests : IAsyncLifetime
 }
 ```
 
-> Para um DAO com relação (como `AtendimentoDAO`), crie também as tabelas relacionadas no `InitializeAsync`.
+### Estrutura de um teste
 
-### Passo 3 - Escrever os testes
-
-Cada teste segue três etapas: **Arrange** (preparar), **Act** (executar) e **Assert** (verificar).
+Cada teste segue a lógica Arrange / Act / Assert.
 
 ```csharp
 [Fact]
@@ -105,43 +87,19 @@ public async Task InsertAsync_ComDadosValidos_GeraIdEPersiste()
 }
 ```
 
-Use um método auxiliar privado para montar a entidade, para não repetir dados em cada teste:
+### Casos mínimos a cobrir
 
-```csharp
-private static Unidade CriarUnidade(string nomeFantasia)
-{
-    return new Unidade
-    {
-        NomeFantasia = nomeFantasia,
-        RazaoSocial = $"{nomeFantasia} LTDA",
-        Uf = "SP",
-    };
-}
-```
+Para cada DAO, é recomendável testar:
 
-### Passo 4 - Cobrir os casos do DAO
+- `GetAllAsync` com lista vazia e preenchida
+- `InsertAsync` com dados válidos
+- `GetByIdAsync` para registro existente e inexistente
+- `UpdateAsync` persistindo alteração
+- `DeleteAsync` removendo o registro
 
-Para cada método CRUD, teste pelo menos:
+## 5. Exemplo de mapeamento
 
-- **GetAllAsync:** lista vazia e lista com registros
-- **InsertAsync:** gera Id e persiste
-- **GetByIdAsync:** Id existente e Id inexistente (deve retornar `null`)
-- **UpdateAsync:** a alteração é persistida
-- **DeleteAsync:** o registro some
-
-### Passo 5 - Rodar
-
-```bash
-dotnet test DialcronWinforms.Tests
-```
-
-A saída mostra quantos testes passaram. Um teste que falha mostra qual `Assert` quebrou.
-
----
-
-## 5. Exemplo de teste de mapeamento
-
-Vale testar se a entidade aponta para a tabela certa do schema. Foi o caso da `Unidade`, que precisou de `[Table("cad_unidade")]`:
+No projeto, o mapeamento de tabela foi validado com o nome real do schema SQLite:
 
 ```csharp
 [Fact]
@@ -154,40 +112,39 @@ public async Task Mapeamento_UsaTabelaCadUnidade()
 }
 ```
 
----
+## 6. Como rodar os testes
 
-## 6. Compilação do app
+Na raiz do projeto:
 
-A pasta `DialcronWinforms.Tests/` é excluída da compilação do app no `DialcronWinforms.csproj`:
-
-```xml
-<Compile Remove="DialcronWinforms.Tests\**" />
+```bash
+dotnet test --nologo
 ```
 
-Se criar novos arquivos de teste, eles ficam automaticamente fora do executável. Não é preciso mexer nessa linha.
+Ou diretamente no projeto de testes:
 
----
-
-## 7. Checklist antes de commitar
-
-```
-[ ] Arquivo em DialcronWinforms.Tests/Data/{Nome}DAOTests.cs
-[ ] Usa SqliteTestDatabase (não o banco de trabalho)
-[ ] Implementa IAsyncLifetime (InitializeAsync / DisposeAsync)
-[ ] Nomes de método no padrão {Metodo}_{Cenario}_{ResultadoEsperado}
-[ ] Cobre GetAll, Insert, GetById (existente e inexistente), Update e Delete
-[ ] dotnet test sem erro
-[ ] dotnet build sem erro
+```bash
+dotnet test DialcronWinforms.Tests/DialcronWinforms.Tests.csproj --nologo
 ```
 
----
+## 7. Checklist antes de entregar
+
+- [ ] Arquivo de teste criado em `DialcronWinforms.Tests/Data/`
+- [ ] Uso do helper `SqliteTestDatabase`
+- [ ] `IAsyncLifetime` implementado corretamente
+- [ ] Nomes de método no padrão esperado
+- [ ] Cobertura de CRUD mínima
+- [ ] `dotnet test` concluído sem falhas
+- [ ] `dotnet build` concluído sem falhas
 
 ## 8. Erros comuns
 
 | Erro | Causa | Solução |
 |------|-------|---------|
-| `no such table: cad_unidade` | `CreateTableAsync<T>()` não foi chamado | Chame no `InitializeAsync` |
-| Testes passam sozinhos e falham juntos | Banco compartilhado entre testes | Use `SqliteTestDatabase.CreateAsync()` no `InitializeAsync` |
-| Arquivo de teste entra no executável | Pasta de testes fora da exclusão | Confira o `<Compile Remove>` no `DialcronWinforms.csproj` |
-| `Database` não isolado | Teste chama o singleton | Teste o DAO diretamente, com a conexão do helper |
-| Falha só no `DisposeAsync` | Arquivo ainda aberto | Feche a conexão com `GetConnection().Dispose()` (já feito no helper) |
+| `no such table: cad_unidade` | tabela não criada no `InitializeAsync` | chamar `CreateTableAsync<T>()` antes dos testes |
+| Testes interferem entre si | uso do banco da aplicação em vez do temporário | usar `SqliteTestDatabase.CreateAsync()` |
+| `Database` não isolado | referência ao singleton | testar diretamente o DAO com conexão isolada |
+| Falha em `DisposeAsync` | arquivo ainda aberto | garantir que a conexão foi liberada antes da exclusão |
+
+## 9. Observação sobre o projeto atual
+
+Atualmente, o repositório possui um projeto de testes funcional e validado com a suíte existente. Consulte também o documento [../Relatório_de_Testes.md](../Relatório_de_Testes.md) para manter o histórico de execução e evidências.
