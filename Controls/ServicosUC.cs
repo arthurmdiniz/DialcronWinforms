@@ -24,7 +24,19 @@ public partial class ServicoUC : UserControl
         dgvServicos.DataSource = _servico;
         dgvServicos.SelectionChanged += DgvServicos_SelectionChanged;
         dgvServicos.CellFormatting += DgvServicos_CellFormatting;
+        txtPreco.Leave += TxtPreco_Leave;
         Load += OnServicoUCLoad;
+    }
+
+    private void TxtPreco_Leave(object? sender, EventArgs e)
+    {
+        if (FuncoesGerais.LerDecimal(txtPreco.Text) is decimal valor)
+            txtPreco.Text = FormatarPreco(valor);
+    }
+
+    private static string FormatarPreco(decimal valor)
+    {
+        return string.Create(CultureInfo.InvariantCulture, $"R${valor:0.00}");
     }
 
     private void DgvServicos_CellFormatting(object? sender, DataGridViewCellFormattingEventArgs e)
@@ -173,7 +185,7 @@ public partial class ServicoUC : UserControl
     {
         cbxUnidade.SelectedItem = _unidades.FirstOrDefault(u => u.IdUnidade == s.Unidade);
         txtNome.Text = s.Nome;
-        txtPreco.Text = s.Preco.ToString();
+        txtPreco.Text = FormatarPreco((decimal)s.Preco);
         txtTempo.Text = s.DuracaoMinutos.ToString();
         chkAtivo.Checked = s.Ativo != "N";
     }
