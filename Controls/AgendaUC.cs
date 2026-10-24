@@ -244,15 +244,8 @@ public partial class AgendaUC : UserControl
         try
         {
             var conexao = await Database.Instance.InitializeAsync();
-            var belId = _selecionado.Belo.Id;
-            var cadId = _selecionado.Cadastro.Id;
-
-            await conexao.RunInTransactionAsync(tx =>
-            {
-                tx.Table<AtendimentoServico>().Delete(s => s.Atendimento == belId);
-                tx.Delete<BelAtendimento>(belId);
-                tx.Delete<Atendimento>(cadId);
-            });
+            _selecionado.Belo.Situacao = "E";
+            await new BelAtendimentoDAO(conexao).UpdateAsync(_selecionado.Belo);
 
             LimparSelecao();
             await FiltrarPorDiaAsync(dtpDataAgenda.Value.Date);
