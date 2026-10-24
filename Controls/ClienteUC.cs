@@ -35,6 +35,9 @@ public partial class ClienteUC : UserControl
         {
             MessageBox.Show($"Não foi possível carregar os clientes: {ex.Message}", "Clientes", MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
+
+        LimparSelecao();
+        LimparFormulario();
     }
 
     private static async Task<ClienteDAO> CriarDaoAsync()
@@ -127,8 +130,8 @@ public partial class ClienteUC : UserControl
 
     private void LimparSelecao()
     {
-        _selecionado = null;
         dgvClientes.ClearSelection();
+        _selecionado = null;
     }
 
     private void SelecionarNaGrid(Cliente cliente)

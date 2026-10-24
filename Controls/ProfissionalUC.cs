@@ -45,6 +45,9 @@ public partial class ProfissionalUC : UserControl
         {
             MessageBox.Show($"Não foi possível carregar os profissionais: {ex.Message}", "Profissionais", MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
+
+        LimparSelecao();
+        LimparFormulario();
     }
 
     private static async Task<ProfissionalDAO> CriarDaoAsync()
@@ -128,8 +131,8 @@ public partial class ProfissionalUC : UserControl
 
     private void LimparSelecao()
     {
-        _selecionado = null;
         dgvProfissionais.ClearSelection();
+        _selecionado = null;
     }
 
     private void SelecionarNaGrid(Profissional profissional)

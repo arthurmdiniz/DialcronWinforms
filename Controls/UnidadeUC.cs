@@ -34,6 +34,9 @@ public partial class UnidadeUC : UserControl
         {
             MessageBox.Show($"Não foi possível carregar as unidades: {ex.Message}", "Unidades", MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
+
+        LimparSelecao();
+        LimparFormulario();
     }
 
     private static async Task<UnidadeDAO> CriarDaoAsync()
@@ -102,8 +105,8 @@ public partial class UnidadeUC : UserControl
 
     private void LimparSelecao()
     {
-        _selecionado = null;
         dgvUnidades.ClearSelection();
+        _selecionado = null;
     }
 
     private void SelecionarNaGrid(Unidade unidade)

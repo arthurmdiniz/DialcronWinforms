@@ -73,6 +73,9 @@ public partial class ServicoUC : UserControl
         {
             MessageBox.Show($"Não foi possível carregar os serviços: {ex.Message}", "Serviços", MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
+
+        LimparSelecao();
+        LimparFormulario();
     }
 
     private static async Task<ServicoDAO> CriarDaoAsync()
@@ -164,8 +167,8 @@ public partial class ServicoUC : UserControl
 
     private void LimparSelecao()
     {
-        _selecionado = null;
         dgvServicos.ClearSelection();
+        _selecionado = null;
     }
 
     private void SelecionarNaGrid(Servico servico)
