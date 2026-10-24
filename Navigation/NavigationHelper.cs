@@ -15,10 +15,14 @@ public static class NavigationHelper
         if (_container is null)
             throw new InvalidOperationException("NavigationHelper not initialized.");
 
+        var anterior = _current;
+
         _current = control;
         _current.Dock = DockStyle.Fill;
 
         _container.Controls.Clear();
         _container.Controls.Add(_current);
+
+        anterior?.Dispose();
     }
 }
