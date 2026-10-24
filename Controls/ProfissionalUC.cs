@@ -112,37 +112,6 @@ public partial class ProfissionalUC : UserControl
         }
     }
 
-    private async void BtnExcluir_Click(object? sender, EventArgs e)
-    {
-        if (_selecionado is null)
-        {
-            MessageBox.Show("Selecione um profissional na lista para excluir.", "Profissionais", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-            return;
-        }
-
-        var confirmacao = MessageBox.Show(
-            $"Excluir o profissional \"{_selecionado.Nome}\"?",
-            "Profissionais",
-            MessageBoxButtons.YesNo,
-            MessageBoxIcon.Question);
-
-        if (confirmacao != DialogResult.Yes)
-            return;
-
-        try
-        {
-            var dao = await CriarDaoAsync();
-            await dao.DeleteAsync(_selecionado.Id);
-            _profissionais.Remove(_selecionado);
-            LimparSelecao();
-            LimparFormulario();
-        }
-        catch (Exception ex)
-        {
-            MessageBox.Show($"Não foi possível excluir o profissional: {ex.Message}", "Profissionais", MessageBoxButtons.OK, MessageBoxIcon.Error);
-        }
-    }
-
     private void LimparSelecao()
     {
         _selecionado = null;

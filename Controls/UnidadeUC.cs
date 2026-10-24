@@ -94,37 +94,6 @@ public partial class UnidadeUC : UserControl
         }
     }
 
-    private async void BtnExcluir_Click(object? sender, EventArgs e)
-    {
-        if (_selecionado is null)
-        {
-            MessageBox.Show("Selecione uma unidade na lista para excluir.", "Unidades", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-            return;
-        }
-
-        var confirmacao = MessageBox.Show(
-            $"Excluir a unidade \"{_selecionado.NomeFantasia}\"?",
-            "Unidades",
-            MessageBoxButtons.YesNo,
-            MessageBoxIcon.Question);
-
-        if (confirmacao != DialogResult.Yes)
-            return;
-
-        try
-        {
-            var dao = await CriarDaoAsync();
-            await dao.DeleteAsync(_selecionado.IdUnidade);
-            _unidades.Remove(_selecionado);
-            LimparSelecao();
-            LimparFormulario();
-        }
-        catch (Exception ex)
-        {
-            MessageBox.Show($"Não foi possível excluir a unidade: {ex.Message}", "Unidades", MessageBoxButtons.OK, MessageBoxIcon.Error);
-        }
-    }
-
     private void BtnCancelar_Click(object? sender, EventArgs e)
     {
         LimparSelecao();

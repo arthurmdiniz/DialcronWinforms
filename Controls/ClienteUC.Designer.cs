@@ -22,7 +22,6 @@ partial class ClienteUC
     private TextBox txtDtaNascimento;
     private Button btnNovo;
     private Button btnSalvar;
-    private Button btnExcluir;
 
     protected override void Dispose(bool disposing)
     {
@@ -53,7 +52,6 @@ partial class ClienteUC
         txtDtaNascimento = new TextBox();
         btnNovo = new Button();
         btnSalvar = new Button();
-        btnExcluir = new Button();
         grpLista.SuspendLayout();
         ((System.ComponentModel.ISupportInitialize)dgvClientes).BeginInit();
         grpDados.SuspendLayout();
@@ -133,7 +131,6 @@ partial class ClienteUC
         grpDados.Controls.Add(txtDtaNascimento);
         grpDados.Controls.Add(btnNovo);
         grpDados.Controls.Add(btnSalvar);
-        grpDados.Controls.Add(btnExcluir);
         grpDados.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
         grpDados.ForeColor = Cores.Gray600;
         grpDados.Location = new Point(15, 262);
@@ -268,20 +265,6 @@ partial class ClienteUC
         btnSalvar.Text = "Salvar";
         btnSalvar.UseVisualStyleBackColor = false;
         btnSalvar.Click += BtnSalvar_Click;
-        // 
-        // btnExcluir
-        // 
-        btnExcluir.BackColor = Cores.Secondary;
-        btnExcluir.FlatStyle = FlatStyle.Flat;
-        btnExcluir.Font = new Font("Segoe UI", 9F);
-        btnExcluir.ForeColor = Cores.PrimaryDarkText;
-        btnExcluir.Location = new Point(292, 205);
-        btnExcluir.Name = "btnExcluir";
-        btnExcluir.Size = new Size(130, 32);
-        btnExcluir.TabIndex = 12;
-        btnExcluir.Text = "Excluir";
-        btnExcluir.UseVisualStyleBackColor = false;
-        btnExcluir.Click += BtnExcluir_Click;
         // 
         // ClienteUC
         // 

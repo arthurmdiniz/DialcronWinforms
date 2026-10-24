@@ -21,7 +21,6 @@ partial class ServicoUC
     private CheckBox chkAtivo;
     private Button btnNovo;
     private Button btnSalvar;
-    private Button btnExcluir;
 
     protected override void Dispose(bool disposing)
     {
@@ -49,7 +48,6 @@ partial class ServicoUC
         chkAtivo = new CheckBox();
         btnNovo = new Button();
         btnSalvar = new Button();
-        btnExcluir = new Button();
         colId = new DataGridViewTextBoxColumn();
         colNome = new DataGridViewTextBoxColumn();
         grpLista.SuspendLayout();
@@ -130,7 +128,6 @@ partial class ServicoUC
         grpDados.Controls.Add(chkAtivo);
         grpDados.Controls.Add(btnNovo);
         grpDados.Controls.Add(btnSalvar);
-        grpDados.Controls.Add(btnExcluir);
         grpDados.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
         grpDados.ForeColor = Color.FromArgb(92, 75, 78);
         grpDados.Location = new Point(15, 262);
@@ -259,20 +256,6 @@ partial class ServicoUC
         btnSalvar.Text = "Salvar";
         btnSalvar.UseVisualStyleBackColor = false;
         btnSalvar.Click += BtnSalvar_Click;
-        // 
-        // btnExcluir
-        // 
-        btnExcluir.BackColor = Color.FromArgb(245, 232, 229);
-        btnExcluir.FlatStyle = FlatStyle.Flat;
-        btnExcluir.Font = new Font("Segoe UI", 9F);
-        btnExcluir.ForeColor = Color.FromArgb(59, 48, 50);
-        btnExcluir.Location = new Point(292, 160);
-        btnExcluir.Name = "btnExcluir";
-        btnExcluir.Size = new Size(130, 32);
-        btnExcluir.TabIndex = 21;
-        btnExcluir.Text = "Excluir";
-        btnExcluir.UseVisualStyleBackColor = false;
-        btnExcluir.Click += BtnExcluir_Click;
         // 
         // ServicoUC
         // 
