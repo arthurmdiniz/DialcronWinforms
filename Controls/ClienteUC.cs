@@ -75,6 +75,7 @@ public partial class ClienteUC : UserControl
                 var novo = new Cliente();
                 PreencherModelo(novo);
                 await dao.InsertAsync(novo);
+                MessageBox.Show("Cliente cadastrado com sucesso.", "Clientes", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 _clientes.Add(novo);
                 _selecionado = novo;
                 SelecionarNaGrid(novo);
@@ -84,6 +85,7 @@ public partial class ClienteUC : UserControl
                 PreencherModelo(_selecionado);
                 await dao.UpdateAsync(_selecionado);
                 dgvClientes.Refresh();
+                MessageBox.Show("Cliente atualizado com sucesso.", "Clientes", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
         }
         catch (Exception ex)

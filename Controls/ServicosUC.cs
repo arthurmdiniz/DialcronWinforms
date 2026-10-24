@@ -113,6 +113,7 @@ public partial class ServicoUC : UserControl
                 var novo = new Servico();
                 PreencherModelo(novo);
                 await dao.InsertAsync(novo);
+                MessageBox.Show("Serviço cadastrado com sucesso.", "Serviços", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 _servico.Add(novo);
                 _selecionado = novo;
                 SelecionarNaGrid(novo);
@@ -122,6 +123,7 @@ public partial class ServicoUC : UserControl
                 PreencherModelo(_selecionado);
                 await dao.UpdateAsync(_selecionado);
                 dgvServicos.Refresh();
+                MessageBox.Show("Serviço atualizado com sucesso.", "Serviços", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
         }
         catch (Exception ex)

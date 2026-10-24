@@ -112,6 +112,7 @@ public partial class ProfissionalUC : UserControl
                 var novo = new Profissional();
                 PreencherModelo(novo);
                 await dao.InsertAsync(novo);
+                MessageBox.Show("Profissional cadastrado com sucesso.", "Profissionais", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 _profissionais.Add(novo);
                 _selecionado = novo;
                 SelecionarNaGrid(novo);
@@ -121,6 +122,7 @@ public partial class ProfissionalUC : UserControl
                 PreencherModelo(_selecionado);
                 await dao.UpdateAsync(_selecionado);
                 dgvProfissionais.Refresh();
+                MessageBox.Show("Profissional atualizado com sucesso.", "Profissionais", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
         }
         catch (Exception ex)

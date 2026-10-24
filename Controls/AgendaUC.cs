@@ -184,6 +184,8 @@ public partial class AgendaUC : UserControl
         {
             var conexao = await Database.Instance.InitializeAsync();
 
+            var novoAtendimento = _selecionado is null;
+
             if (_selecionado is null)
             {
                 var agora = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture);
@@ -217,6 +219,12 @@ public partial class AgendaUC : UserControl
             }
 
             await FiltrarPorDiaAsync(dtpDataAgenda.Value.Date);
+
+            MessageBox.Show(
+                novoAtendimento ? "Atendimento cadastrado com sucesso." : "Atendimento atualizado com sucesso.",
+                "Agenda",
+                MessageBoxButtons.OK,
+                MessageBoxIcon.Information);
         }
         catch (Exception ex)
         {

@@ -80,6 +80,7 @@ public partial class UnidadeUC : UserControl
                 var nova = new Unidade();
                 PreencherModelo(nova);
                 await dao.InsertAsync(nova);
+                MessageBox.Show("Unidade cadastrada com sucesso.", "Unidades", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 _unidades.Add(nova);
                 _selecionado = nova;
                 SelecionarNaGrid(nova);
@@ -89,6 +90,7 @@ public partial class UnidadeUC : UserControl
                 PreencherModelo(_selecionado);
                 await dao.UpdateAsync(_selecionado);
                 dgvUnidades.Refresh();
+                MessageBox.Show("Unidade atualizada com sucesso.", "Unidades", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
         }
         catch (Exception ex)
