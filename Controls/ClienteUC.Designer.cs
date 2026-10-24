@@ -9,6 +9,8 @@ partial class ClienteUC
     private DataGridView dgvClientes;
     private DataGridViewTextBoxColumn colId;
     private DataGridViewTextBoxColumn colNome;
+    private DataGridViewTextBoxColumn colDdd;
+    private DataGridViewTextBoxColumn colTelefone;
     private GroupBox grpDados;
     private Label lblNome;
     private TextBox txtNome;
@@ -39,6 +41,8 @@ partial class ClienteUC
         dgvClientes = new DataGridView();
         colId = new DataGridViewTextBoxColumn();
         colNome = new DataGridViewTextBoxColumn();
+        colDdd = new DataGridViewTextBoxColumn();
+        colTelefone = new DataGridViewTextBoxColumn();
         grpDados = new GroupBox();
         lblNome = new Label();
         txtNome = new TextBox();
@@ -89,7 +93,7 @@ partial class ClienteUC
         dgvClientes.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
         dgvClientes.BackgroundColor = Cores.White;
         dgvClientes.BorderStyle = BorderStyle.None;
-        dgvClientes.Columns.AddRange(new DataGridViewColumn[] { colId, colNome });
+        dgvClientes.Columns.AddRange(new DataGridViewColumn[] { colId, colNome, colDdd, colTelefone });
         dgvClientes.Font = new Font("Segoe UI", 9F);
         dgvClientes.Location = new Point(12, 25);
         dgvClientes.MultiSelect = false;
@@ -103,7 +107,7 @@ partial class ClienteUC
         // colId
         // 
         colId.DataPropertyName = "ClienteId";
-        colId.FillWeight = 30F;
+        colId.FillWeight = 15F;
         colId.HeaderText = "ID";
         colId.Name = "colId";
         colId.ReadOnly = true;
@@ -111,10 +115,26 @@ partial class ClienteUC
         // colNome
         // 
         colNome.DataPropertyName = "Nome";
-        colNome.FillWeight = 70F;
+        colNome.FillWeight = 55F;
         colNome.HeaderText = "Nome";
         colNome.Name = "colNome";
         colNome.ReadOnly = true;
+        // 
+        // colDdd
+        // 
+        colDdd.DataPropertyName = "DddTelefone";
+        colDdd.FillWeight = 10F;
+        colDdd.HeaderText = "DDD";
+        colDdd.Name = "colDdd";
+        colDdd.ReadOnly = true;
+        // 
+        // colTelefone
+        // 
+        colTelefone.DataPropertyName = "Telefone";
+        colTelefone.FillWeight = 20F;
+        colTelefone.HeaderText = "Telefone";
+        colTelefone.Name = "colTelefone";
+        colTelefone.ReadOnly = true;
         // 
         // grpDados
         // 

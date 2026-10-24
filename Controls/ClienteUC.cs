@@ -97,6 +97,12 @@ public partial class ClienteUC : UserControl
             return false;
         }
 
+        if (FuncoesGerais.LerInteiro(txtDdd.Text) is not > 0)
+        {
+            Alertar("Informe o DDD do telefone.", txtDdd);
+            return false;
+        }
+
         if (FuncoesGerais.LerInteiro(txtTelefone.Text) is not > 0)
         {
             Alertar("Informe o telefone.", txtTelefone);
