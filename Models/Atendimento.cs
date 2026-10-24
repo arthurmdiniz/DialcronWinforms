@@ -16,11 +16,15 @@ public class Atendimento
 
     public string? Situacao { get; set; }
 
+    [Column("dta_criacao")]
     public string? DtaCriacao { get; set; }
 
+    [Column("dta_encerramento")]
     public string? DtaEncerramento { get; set; }
 
+    [Column("usuario_criacao")]
     public int? UsuarioCriacao { get; set; }
 
+    [Column("usuario_encerramento")]
     public int? UsuarioEncerramento { get; set; }
 }
