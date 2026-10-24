@@ -86,6 +86,20 @@ public partial class ProfissionalUC : UserControl
             return;
         }
 
+        if (FuncoesGerais.LerInteiro(txtDddCelular.Text) is not > 0)
+        {
+            MessageBox.Show("Informe o DDD do celular.", "Profissionais", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            txtDddCelular.Focus();
+            return;
+        }
+
+        if (FuncoesGerais.LerInteiro(txtCelular.Text) is not > 0)
+        {
+            MessageBox.Show("Informe o celular.", "Profissionais", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            txtCelular.Focus();
+            return;
+        }
+
         try
         {
             var dao = await CriarDaoAsync();
