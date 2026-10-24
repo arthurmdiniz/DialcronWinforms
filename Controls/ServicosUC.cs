@@ -1,4 +1,5 @@
 using System.ComponentModel;
+using System.Globalization;
 using DialcronWinforms.Data;
 using DialcronWinforms.Data.DAO;
 using DialcronWinforms.Models;
@@ -22,7 +23,22 @@ public partial class ServicoUC : UserControl
 
         dgvServicos.DataSource = _servico;
         dgvServicos.SelectionChanged += DgvServicos_SelectionChanged;
+        dgvServicos.CellFormatting += DgvServicos_CellFormatting;
         Load += OnServicoUCLoad;
+    }
+
+    private void DgvServicos_CellFormatting(object? sender, DataGridViewCellFormattingEventArgs e)
+    {
+        if (dgvServicos.Columns[e.ColumnIndex] == colPreco && e.Value is double preco)
+        {
+            e.Value = string.Create(CultureInfo.InvariantCulture, $"R${preco:0.00}");
+            e.FormattingApplied = true;
+        }
+        else if (dgvServicos.Columns[e.ColumnIndex] == colTempo && e.Value is int minutos)
+        {
+            e.Value = TimeSpan.FromMinutes(minutos).ToString(@"hh\:mm", CultureInfo.InvariantCulture);
+            e.FormattingApplied = true;
+        }
     }
 
     private async void OnServicoUCLoad(object? sender, EventArgs e)

@@ -9,6 +9,8 @@ partial class ServicoUC
     private DataGridView dgvServicos;
     private DataGridViewTextBoxColumn colId;
     private DataGridViewTextBoxColumn colNome;
+    private DataGridViewTextBoxColumn colPreco;
+    private DataGridViewTextBoxColumn colTempo;
     private GroupBox grpDados;
     private Label lblUnidade;
     private ComboBox cbxUnidade;
@@ -50,6 +52,8 @@ partial class ServicoUC
         btnSalvar = new Button();
         colId = new DataGridViewTextBoxColumn();
         colNome = new DataGridViewTextBoxColumn();
+        colPreco = new DataGridViewTextBoxColumn();
+        colTempo = new DataGridViewTextBoxColumn();
         grpLista.SuspendLayout();
         ((System.ComponentModel.ISupportInitialize)dgvServicos).BeginInit();
         grpDados.SuspendLayout();
@@ -96,7 +100,7 @@ partial class ServicoUC
         dgvServicos.Size = new Size(600, 175);
         dgvServicos.TabIndex = 0;
         dgvServicos.AutoGenerateColumns = false;
-        dgvServicos.Columns.AddRange(new DataGridViewColumn[] { colId, colNome });
+        dgvServicos.Columns.AddRange(new DataGridViewColumn[] { colId, colNome, colPreco, colTempo });
         // 
         // colId
         // 
@@ -104,7 +108,7 @@ partial class ServicoUC
         colId.HeaderText = "ID";
         colId.Name = "colId";
         colId.ReadOnly = true;
-        colId.FillWeight = 30F;
+        colId.FillWeight = 15F;
         // 
         // colNome
         // 
@@ -112,7 +116,23 @@ partial class ServicoUC
         colNome.HeaderText = "Nome";
         colNome.Name = "colNome";
         colNome.ReadOnly = true;
-        colNome.FillWeight = 70F;
+        colNome.FillWeight = 50F;
+        // 
+        // colPreco
+        // 
+        colPreco.DataPropertyName = "Preco";
+        colPreco.HeaderText = "Preço";
+        colPreco.Name = "colPreco";
+        colPreco.ReadOnly = true;
+        colPreco.FillWeight = 20F;
+        // 
+        // colTempo
+        // 
+        colTempo.DataPropertyName = "DuracaoMinutos";
+        colTempo.HeaderText = "Tempo (min)";
+        colTempo.Name = "colTempo";
+        colTempo.ReadOnly = true;
+        colTempo.FillWeight = 15F;
         // 
         // grpDados
         // 
