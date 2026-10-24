@@ -35,6 +35,9 @@ public partial class ClienteUC : UserControl
         {
             MessageBox.Show($"Não foi possível carregar os clientes: {ex.Message}", "Clientes", MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
+
+        LimparSelecao();
+        LimparFormulario();
     }
 
     private static async Task<ClienteDAO> CriarDaoAsync()
@@ -72,6 +75,7 @@ public partial class ClienteUC : UserControl
                 var novo = new Cliente();
                 PreencherModelo(novo);
                 await dao.InsertAsync(novo);
+                MessageBox.Show("Cliente cadastrado com sucesso.", "Clientes", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 _clientes.Add(novo);
                 _selecionado = novo;
                 SelecionarNaGrid(novo);
@@ -81,6 +85,7 @@ public partial class ClienteUC : UserControl
                 PreencherModelo(_selecionado);
                 await dao.UpdateAsync(_selecionado);
                 dgvClientes.Refresh();
+                MessageBox.Show("Cliente atualizado com sucesso.", "Clientes", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
         }
         catch (Exception ex)
@@ -89,42 +94,17 @@ public partial class ClienteUC : UserControl
         }
     }
 
-    private async void BtnExcluir_Click(object? sender, EventArgs e)
-    {
-        if (_selecionado is null)
-        {
-            MessageBox.Show("Selecione um cliente na lista para excluir.", "Clientes", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-            return;
-        }
-
-        var confirmacao = MessageBox.Show(
-            $"Excluir o cliente \"{_selecionado.Nome}\"?",
-            "Clientes",
-            MessageBoxButtons.YesNo,
-            MessageBoxIcon.Question);
-
-        if (confirmacao != DialogResult.Yes)
-            return;
-
-        try
-        {
-            var dao = await CriarDaoAsync();
-            await dao.DeleteAsync(_selecionado.ClienteId);
-            _clientes.Remove(_selecionado);
-            LimparSelecao();
-            LimparFormulario();
-        }
-        catch (Exception ex)
-        {
-            MessageBox.Show($"Não foi possível excluir o cliente: {ex.Message}", "Clientes", MessageBoxButtons.OK, MessageBoxIcon.Error);
-        }
-    }
-
     private bool ValidarFormulario()
     {
         if (string.IsNullOrWhiteSpace(txtNome.Text))
         {
             Alertar("Informe o nome do cliente.", txtNome);
+            return false;
+        }
+
+        if (FuncoesGerais.LerInteiro(txtDdd.Text) is not > 0)
+        {
+            Alertar("Informe o DDD do telefone.", txtDdd);
             return false;
         }
 
@@ -152,8 +132,8 @@ public partial class ClienteUC : UserControl
 
     private void LimparSelecao()
     {
-        _selecionado = null;
         dgvClientes.ClearSelection();
+        _selecionado = null;
     }
 
     private void SelecionarNaGrid(Cliente cliente)

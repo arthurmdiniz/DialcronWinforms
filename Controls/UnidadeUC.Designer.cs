@@ -44,7 +44,6 @@ partial class UnidadeUC
     private Button btnIncluir;
     private Button btnSalvar;
     private Button btnCancelar;
-    private Button btnExcluir;
 
     protected override void Dispose(bool disposing)
     {
@@ -100,7 +99,6 @@ partial class UnidadeUC
         btnIncluir = new Button();
         btnSalvar = new Button();
         btnCancelar = new Button();
-        btnExcluir = new Button();
         grpLista.SuspendLayout();
         ((System.ComponentModel.ISupportInitialize)dgvUnidades).BeginInit();
         grpDados.SuspendLayout();
@@ -216,7 +214,6 @@ partial class UnidadeUC
         grpDados.Controls.Add(btnIncluir);
         grpDados.Controls.Add(btnSalvar);
         grpDados.Controls.Add(btnCancelar);
-        grpDados.Controls.Add(btnExcluir);
         grpDados.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
         grpDados.ForeColor = Color.FromArgb(92, 75, 78);
         grpDados.Location = new Point(15, 262);
@@ -523,7 +520,7 @@ partial class UnidadeUC
         btnIncluir.FlatStyle = FlatStyle.Flat;
         btnIncluir.Font = new Font("Segoe UI", 9F);
         btnIncluir.ForeColor = Color.FromArgb(59, 48, 50);
-        btnIncluir.Location = new Point(12, 258);
+        btnIncluir.Location = new Point(107, 258);
         btnIncluir.Name = "btnIncluir";
         btnIncluir.Size = new Size(130, 32);
         btnIncluir.TabIndex = 32;
@@ -537,7 +534,7 @@ partial class UnidadeUC
         btnSalvar.FlatStyle = FlatStyle.Flat;
         btnSalvar.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
         btnSalvar.ForeColor = Color.FromArgb(255, 255, 255);
-        btnSalvar.Location = new Point(152, 258);
+        btnSalvar.Location = new Point(247, 258);
         btnSalvar.Name = "btnSalvar";
         btnSalvar.Size = new Size(130, 32);
         btnSalvar.TabIndex = 33;
@@ -551,27 +548,13 @@ partial class UnidadeUC
         btnCancelar.FlatStyle = FlatStyle.Flat;
         btnCancelar.Font = new Font("Segoe UI", 9F);
         btnCancelar.ForeColor = Color.FromArgb(59, 48, 50);
-        btnCancelar.Location = new Point(432, 258);
+        btnCancelar.Location = new Point(387, 258);
         btnCancelar.Name = "btnCancelar";
         btnCancelar.Size = new Size(130, 32);
         btnCancelar.TabIndex = 34;
         btnCancelar.Text = "Cancelar";
         btnCancelar.UseVisualStyleBackColor = false;
         btnCancelar.Click += BtnCancelar_Click;
-        // 
-        // btnExcluir
-        // 
-        btnExcluir.BackColor = Color.FromArgb(245, 232, 229);
-        btnExcluir.FlatStyle = FlatStyle.Flat;
-        btnExcluir.Font = new Font("Segoe UI", 9F);
-        btnExcluir.ForeColor = Color.FromArgb(59, 48, 50);
-        btnExcluir.Location = new Point(292, 258);
-        btnExcluir.Name = "btnExcluir";
-        btnExcluir.Size = new Size(130, 32);
-        btnExcluir.TabIndex = 35;
-        btnExcluir.Text = "Excluir";
-        btnExcluir.UseVisualStyleBackColor = false;
-        btnExcluir.Click += BtnExcluir_Click;
         // 
         // UnidadeUC
         // 

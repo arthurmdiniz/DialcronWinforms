@@ -22,5 +22,5 @@ public class Servico
 
     [Column("ativo")]
     public string? Ativo { get; set; }
-    public object Tempo { get; internal set; }
+    public object? Tempo { get; internal set; }
 }

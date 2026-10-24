@@ -29,7 +29,7 @@ public class BelAtendimentoDAO
         var prefixo = data.ToString("yyyy-MM-dd");
 
         return await _connection.Table<BelAtendimento>()
-            .Where(b => b.DtaAtendimento != null && b.DtaAtendimento.StartsWith(prefixo))
+            .Where(b => b.DtaAtendimento != null && b.DtaAtendimento.StartsWith(prefixo) && b.Situacao != "E")
             .ToListAsync();
     }
 

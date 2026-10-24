@@ -45,6 +45,9 @@ public partial class ProfissionalUC : UserControl
         {
             MessageBox.Show($"Não foi possível carregar os profissionais: {ex.Message}", "Profissionais", MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
+
+        LimparSelecao();
+        LimparFormulario();
     }
 
     private static async Task<ProfissionalDAO> CriarDaoAsync()
@@ -86,6 +89,20 @@ public partial class ProfissionalUC : UserControl
             return;
         }
 
+        if (FuncoesGerais.LerInteiro(txtDddCelular.Text) is not > 0)
+        {
+            MessageBox.Show("Informe o DDD do celular.", "Profissionais", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            txtDddCelular.Focus();
+            return;
+        }
+
+        if (FuncoesGerais.LerInteiro(txtCelular.Text) is not > 0)
+        {
+            MessageBox.Show("Informe o celular.", "Profissionais", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            txtCelular.Focus();
+            return;
+        }
+
         try
         {
             var dao = await CriarDaoAsync();
@@ -95,6 +112,7 @@ public partial class ProfissionalUC : UserControl
                 var novo = new Profissional();
                 PreencherModelo(novo);
                 await dao.InsertAsync(novo);
+                MessageBox.Show("Profissional cadastrado com sucesso.", "Profissionais", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 _profissionais.Add(novo);
                 _selecionado = novo;
                 SelecionarNaGrid(novo);
@@ -104,6 +122,7 @@ public partial class ProfissionalUC : UserControl
                 PreencherModelo(_selecionado);
                 await dao.UpdateAsync(_selecionado);
                 dgvProfissionais.Refresh();
+                MessageBox.Show("Profissional atualizado com sucesso.", "Profissionais", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
         }
         catch (Exception ex)
@@ -112,41 +131,10 @@ public partial class ProfissionalUC : UserControl
         }
     }
 
-    private async void BtnExcluir_Click(object? sender, EventArgs e)
-    {
-        if (_selecionado is null)
-        {
-            MessageBox.Show("Selecione um profissional na lista para excluir.", "Profissionais", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-            return;
-        }
-
-        var confirmacao = MessageBox.Show(
-            $"Excluir o profissional \"{_selecionado.Nome}\"?",
-            "Profissionais",
-            MessageBoxButtons.YesNo,
-            MessageBoxIcon.Question);
-
-        if (confirmacao != DialogResult.Yes)
-            return;
-
-        try
-        {
-            var dao = await CriarDaoAsync();
-            await dao.DeleteAsync(_selecionado.Id);
-            _profissionais.Remove(_selecionado);
-            LimparSelecao();
-            LimparFormulario();
-        }
-        catch (Exception ex)
-        {
-            MessageBox.Show($"Não foi possível excluir o profissional: {ex.Message}", "Profissionais", MessageBoxButtons.OK, MessageBoxIcon.Error);
-        }
-    }
-
     private void LimparSelecao()
     {
-        _selecionado = null;
         dgvProfissionais.ClearSelection();
+        _selecionado = null;
     }
 
     private void SelecionarNaGrid(Profissional profissional)

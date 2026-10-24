@@ -9,6 +9,8 @@ partial class ClienteUC
     private DataGridView dgvClientes;
     private DataGridViewTextBoxColumn colId;
     private DataGridViewTextBoxColumn colNome;
+    private DataGridViewTextBoxColumn colDdd;
+    private DataGridViewTextBoxColumn colTelefone;
     private GroupBox grpDados;
     private Label lblNome;
     private TextBox txtNome;
@@ -22,7 +24,6 @@ partial class ClienteUC
     private TextBox txtDtaNascimento;
     private Button btnNovo;
     private Button btnSalvar;
-    private Button btnExcluir;
 
     protected override void Dispose(bool disposing)
     {
@@ -40,6 +41,8 @@ partial class ClienteUC
         dgvClientes = new DataGridView();
         colId = new DataGridViewTextBoxColumn();
         colNome = new DataGridViewTextBoxColumn();
+        colDdd = new DataGridViewTextBoxColumn();
+        colTelefone = new DataGridViewTextBoxColumn();
         grpDados = new GroupBox();
         lblNome = new Label();
         txtNome = new TextBox();
@@ -53,7 +56,6 @@ partial class ClienteUC
         txtDtaNascimento = new TextBox();
         btnNovo = new Button();
         btnSalvar = new Button();
-        btnExcluir = new Button();
         grpLista.SuspendLayout();
         ((System.ComponentModel.ISupportInitialize)dgvClientes).BeginInit();
         grpDados.SuspendLayout();
@@ -91,7 +93,7 @@ partial class ClienteUC
         dgvClientes.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
         dgvClientes.BackgroundColor = Cores.White;
         dgvClientes.BorderStyle = BorderStyle.None;
-        dgvClientes.Columns.AddRange(new DataGridViewColumn[] { colId, colNome });
+        dgvClientes.Columns.AddRange(new DataGridViewColumn[] { colId, colNome, colDdd, colTelefone });
         dgvClientes.Font = new Font("Segoe UI", 9F);
         dgvClientes.Location = new Point(12, 25);
         dgvClientes.MultiSelect = false;
@@ -105,7 +107,7 @@ partial class ClienteUC
         // colId
         // 
         colId.DataPropertyName = "ClienteId";
-        colId.FillWeight = 30F;
+        colId.FillWeight = 15F;
         colId.HeaderText = "ID";
         colId.Name = "colId";
         colId.ReadOnly = true;
@@ -113,10 +115,26 @@ partial class ClienteUC
         // colNome
         // 
         colNome.DataPropertyName = "Nome";
-        colNome.FillWeight = 70F;
+        colNome.FillWeight = 55F;
         colNome.HeaderText = "Nome";
         colNome.Name = "colNome";
         colNome.ReadOnly = true;
+        // 
+        // colDdd
+        // 
+        colDdd.DataPropertyName = "DddTelefone";
+        colDdd.FillWeight = 10F;
+        colDdd.HeaderText = "DDD";
+        colDdd.Name = "colDdd";
+        colDdd.ReadOnly = true;
+        // 
+        // colTelefone
+        // 
+        colTelefone.DataPropertyName = "Telefone";
+        colTelefone.FillWeight = 20F;
+        colTelefone.HeaderText = "Telefone";
+        colTelefone.Name = "colTelefone";
+        colTelefone.ReadOnly = true;
         // 
         // grpDados
         // 
@@ -133,7 +151,6 @@ partial class ClienteUC
         grpDados.Controls.Add(txtDtaNascimento);
         grpDados.Controls.Add(btnNovo);
         grpDados.Controls.Add(btnSalvar);
-        grpDados.Controls.Add(btnExcluir);
         grpDados.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
         grpDados.ForeColor = Cores.Gray600;
         grpDados.Location = new Point(15, 262);
@@ -247,7 +264,7 @@ partial class ClienteUC
         btnNovo.FlatStyle = FlatStyle.Flat;
         btnNovo.Font = new Font("Segoe UI", 9F);
         btnNovo.ForeColor = Cores.PrimaryDarkText;
-        btnNovo.Location = new Point(12, 205);
+        btnNovo.Location = new Point(177, 205);
         btnNovo.Name = "btnNovo";
         btnNovo.Size = new Size(130, 32);
         btnNovo.TabIndex = 10;
@@ -261,27 +278,13 @@ partial class ClienteUC
         btnSalvar.FlatStyle = FlatStyle.Flat;
         btnSalvar.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
         btnSalvar.ForeColor = Cores.White;
-        btnSalvar.Location = new Point(152, 205);
+        btnSalvar.Location = new Point(317, 205);
         btnSalvar.Name = "btnSalvar";
         btnSalvar.Size = new Size(130, 32);
         btnSalvar.TabIndex = 11;
         btnSalvar.Text = "Salvar";
         btnSalvar.UseVisualStyleBackColor = false;
         btnSalvar.Click += BtnSalvar_Click;
-        // 
-        // btnExcluir
-        // 
-        btnExcluir.BackColor = Cores.Secondary;
-        btnExcluir.FlatStyle = FlatStyle.Flat;
-        btnExcluir.Font = new Font("Segoe UI", 9F);
-        btnExcluir.ForeColor = Cores.PrimaryDarkText;
-        btnExcluir.Location = new Point(292, 205);
-        btnExcluir.Name = "btnExcluir";
-        btnExcluir.Size = new Size(130, 32);
-        btnExcluir.TabIndex = 12;
-        btnExcluir.Text = "Excluir";
-        btnExcluir.UseVisualStyleBackColor = false;
-        btnExcluir.Click += BtnExcluir_Click;
         // 
         // ClienteUC
         // 

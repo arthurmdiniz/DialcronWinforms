@@ -34,6 +34,9 @@ public partial class UnidadeUC : UserControl
         {
             MessageBox.Show($"Não foi possível carregar as unidades: {ex.Message}", "Unidades", MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
+
+        LimparSelecao();
+        LimparFormulario();
     }
 
     private static async Task<UnidadeDAO> CriarDaoAsync()
@@ -77,6 +80,7 @@ public partial class UnidadeUC : UserControl
                 var nova = new Unidade();
                 PreencherModelo(nova);
                 await dao.InsertAsync(nova);
+                MessageBox.Show("Unidade cadastrada com sucesso.", "Unidades", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 _unidades.Add(nova);
                 _selecionado = nova;
                 SelecionarNaGrid(nova);
@@ -86,42 +90,12 @@ public partial class UnidadeUC : UserControl
                 PreencherModelo(_selecionado);
                 await dao.UpdateAsync(_selecionado);
                 dgvUnidades.Refresh();
+                MessageBox.Show("Unidade atualizada com sucesso.", "Unidades", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
         }
         catch (Exception ex)
         {
             MessageBox.Show($"Não foi possível salvar a unidade: {ex.Message}", "Unidades", MessageBoxButtons.OK, MessageBoxIcon.Error);
-        }
-    }
-
-    private async void BtnExcluir_Click(object? sender, EventArgs e)
-    {
-        if (_selecionado is null)
-        {
-            MessageBox.Show("Selecione uma unidade na lista para excluir.", "Unidades", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-            return;
-        }
-
-        var confirmacao = MessageBox.Show(
-            $"Excluir a unidade \"{_selecionado.NomeFantasia}\"?",
-            "Unidades",
-            MessageBoxButtons.YesNo,
-            MessageBoxIcon.Question);
-
-        if (confirmacao != DialogResult.Yes)
-            return;
-
-        try
-        {
-            var dao = await CriarDaoAsync();
-            await dao.DeleteAsync(_selecionado.IdUnidade);
-            _unidades.Remove(_selecionado);
-            LimparSelecao();
-            LimparFormulario();
-        }
-        catch (Exception ex)
-        {
-            MessageBox.Show($"Não foi possível excluir a unidade: {ex.Message}", "Unidades", MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
     }
 
@@ -133,8 +107,8 @@ public partial class UnidadeUC : UserControl
 
     private void LimparSelecao()
     {
-        _selecionado = null;
         dgvUnidades.ClearSelection();
+        _selecionado = null;
     }
 
     private void SelecionarNaGrid(Unidade unidade)

@@ -1,4 +1,5 @@
 using System.ComponentModel;
+using System.Globalization;
 using DialcronWinforms.Data;
 using DialcronWinforms.Data.DAO;
 using DialcronWinforms.Models;
@@ -22,7 +23,34 @@ public partial class ServicoUC : UserControl
 
         dgvServicos.DataSource = _servico;
         dgvServicos.SelectionChanged += DgvServicos_SelectionChanged;
+        dgvServicos.CellFormatting += DgvServicos_CellFormatting;
+        txtPreco.Leave += TxtPreco_Leave;
         Load += OnServicoUCLoad;
+    }
+
+    private void TxtPreco_Leave(object? sender, EventArgs e)
+    {
+        if (FuncoesGerais.LerDecimal(txtPreco.Text) is decimal valor)
+            txtPreco.Text = FormatarPreco(valor);
+    }
+
+    private static string FormatarPreco(decimal valor)
+    {
+        return string.Create(CultureInfo.InvariantCulture, $"R${valor:0.00}");
+    }
+
+    private void DgvServicos_CellFormatting(object? sender, DataGridViewCellFormattingEventArgs e)
+    {
+        if (dgvServicos.Columns[e.ColumnIndex] == colPreco && e.Value is double preco)
+        {
+            e.Value = string.Create(CultureInfo.InvariantCulture, $"R${preco:0.00}");
+            e.FormattingApplied = true;
+        }
+        else if (dgvServicos.Columns[e.ColumnIndex] == colTempo && e.Value is int minutos)
+        {
+            e.Value = TimeSpan.FromMinutes(minutos).ToString(@"hh\:mm", CultureInfo.InvariantCulture);
+            e.FormattingApplied = true;
+        }
     }
 
     private async void OnServicoUCLoad(object? sender, EventArgs e)
@@ -45,6 +73,9 @@ public partial class ServicoUC : UserControl
         {
             MessageBox.Show($"Não foi possível carregar os serviços: {ex.Message}", "Serviços", MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
+
+        LimparSelecao();
+        LimparFormulario();
     }
 
     private static async Task<ServicoDAO> CriarDaoAsync()
@@ -82,6 +113,7 @@ public partial class ServicoUC : UserControl
                 var novo = new Servico();
                 PreencherModelo(novo);
                 await dao.InsertAsync(novo);
+                MessageBox.Show("Serviço cadastrado com sucesso.", "Serviços", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 _servico.Add(novo);
                 _selecionado = novo;
                 SelecionarNaGrid(novo);
@@ -91,42 +123,12 @@ public partial class ServicoUC : UserControl
                 PreencherModelo(_selecionado);
                 await dao.UpdateAsync(_selecionado);
                 dgvServicos.Refresh();
+                MessageBox.Show("Serviço atualizado com sucesso.", "Serviços", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
         }
         catch (Exception ex)
         {
             MessageBox.Show($"Não foi possível salvar o serviço: {ex.Message}", "Serviços", MessageBoxButtons.OK, MessageBoxIcon.Error);
-        }
-    }
-
-    private async void BtnExcluir_Click(object? sender, EventArgs e)
-    {
-        if (_selecionado is null)
-        {
-            MessageBox.Show("Selecione um serviço na lista para excluir.", "Serviços", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-            return;
-        }
-
-        var confirmacao = MessageBox.Show(
-            $"Excluir o serviço \"{_selecionado.Nome}\"?",
-            "Serviços",
-            MessageBoxButtons.YesNo,
-            MessageBoxIcon.Question);
-
-        if (confirmacao != DialogResult.Yes)
-            return;
-
-        try
-        {
-            var dao = await CriarDaoAsync();
-            await dao.DeleteAsync(_selecionado.Id);
-            _servico.Remove(_selecionado);
-            LimparSelecao();
-            LimparFormulario();
-        }
-        catch (Exception ex)
-        {
-            MessageBox.Show($"Não foi possível excluir o serviço: {ex.Message}", "Serviços", MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
     }
 
@@ -167,8 +169,8 @@ public partial class ServicoUC : UserControl
 
     private void LimparSelecao()
     {
-        _selecionado = null;
         dgvServicos.ClearSelection();
+        _selecionado = null;
     }
 
     private void SelecionarNaGrid(Servico servico)
@@ -188,7 +190,7 @@ public partial class ServicoUC : UserControl
     {
         cbxUnidade.SelectedItem = _unidades.FirstOrDefault(u => u.IdUnidade == s.Unidade);
         txtNome.Text = s.Nome;
-        txtPreco.Text = s.Preco.ToString();
+        txtPreco.Text = FormatarPreco((decimal)s.Preco);
         txtTempo.Text = s.DuracaoMinutos.ToString();
         chkAtivo.Checked = s.Ativo != "N";
     }
