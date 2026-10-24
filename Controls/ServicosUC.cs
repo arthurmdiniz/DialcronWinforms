@@ -1,4 +1,6 @@
 using System.ComponentModel;
+using DialcronWinforms.Data;
+using DialcronWinforms.Data.DAO;
 using DialcronWinforms.Models;
 
 namespace DialcronWinforms.Controls;
@@ -8,7 +10,6 @@ public partial class ServicoUC : UserControl
     private readonly BindingList<Servico> _servico = new();
     private readonly BindingList<Unidade> _unidades = new();
     private Servico? _selecionado;
-    private int _proximoId = 1;
 
     public ServicoUC()
     {
@@ -21,6 +22,34 @@ public partial class ServicoUC : UserControl
 
         dgvServicos.DataSource = _servico;
         dgvServicos.SelectionChanged += DgvServicos_SelectionChanged;
+        Load += OnServicoUCLoad;
+    }
+
+    private async void OnServicoUCLoad(object? sender, EventArgs e)
+    {
+        try
+        {
+            var connection = await Database.Instance.InitializeAsync();
+            var unidades = await new UnidadeDAO(connection).GetAllAsync();
+            var servicos = await new ServicoDAO(connection).GetAllAsync();
+
+            _unidades.Clear();
+            foreach (var unidade in unidades)
+                _unidades.Add(unidade);
+
+            _servico.Clear();
+            foreach (var servico in servicos)
+                _servico.Add(servico);
+        }
+        catch (Exception ex)
+        {
+            MessageBox.Show($"Não foi possível carregar os serviços: {ex.Message}", "Serviços", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        }
+    }
+
+    private static async Task<ServicoDAO> CriarDaoAsync()
+    {
+        return new ServicoDAO(await Database.Instance.InitializeAsync());
     }
 
     private void DgvServicos_SelectionChanged(object? sender, EventArgs e)
@@ -39,23 +68,65 @@ public partial class ServicoUC : UserControl
         txtNome.Focus();
     }
 
-    private void BtnSalvar_Click(object? sender, EventArgs e)
+    private async void BtnSalvar_Click(object? sender, EventArgs e)
     {
         if (!ValidarFormulario())
             return;
 
+        try
+        {
+            var dao = await CriarDaoAsync();
+
+            if (_selecionado is null)
+            {
+                var novo = new Servico();
+                PreencherModelo(novo);
+                await dao.InsertAsync(novo);
+                _servico.Add(novo);
+                _selecionado = novo;
+                SelecionarNaGrid(novo);
+            }
+            else
+            {
+                PreencherModelo(_selecionado);
+                await dao.UpdateAsync(_selecionado);
+                dgvServicos.Refresh();
+            }
+        }
+        catch (Exception ex)
+        {
+            MessageBox.Show($"Não foi possível salvar o serviço: {ex.Message}", "Serviços", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        }
+    }
+
+    private async void BtnExcluir_Click(object? sender, EventArgs e)
+    {
         if (_selecionado is null)
         {
-            var novo = new Servico { Id = _proximoId++ };
-            PreencherModelo(novo);
-            _servico.Add(novo);
-            _selecionado = novo;
-            SelecionarNaGrid(novo);
+            MessageBox.Show("Selecione um serviço na lista para excluir.", "Serviços", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            return;
         }
-        else
+
+        var confirmacao = MessageBox.Show(
+            $"Excluir o serviço \"{_selecionado.Nome}\"?",
+            "Serviços",
+            MessageBoxButtons.YesNo,
+            MessageBoxIcon.Question);
+
+        if (confirmacao != DialogResult.Yes)
+            return;
+
+        try
         {
-            PreencherModelo(_selecionado);
-            dgvServicos.Refresh();
+            var dao = await CriarDaoAsync();
+            await dao.DeleteAsync(_selecionado.Id);
+            _servico.Remove(_selecionado);
+            LimparSelecao();
+            LimparFormulario();
+        }
+        catch (Exception ex)
+        {
+            MessageBox.Show($"Não foi possível excluir o serviço: {ex.Message}", "Serviços", MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
     }
 
@@ -64,6 +135,12 @@ public partial class ServicoUC : UserControl
         if (string.IsNullOrWhiteSpace(txtNome.Text))
         {
             Alertar("Informe o nome do Serviço.", txtNome);
+            return false;
+        }
+
+        if (cbxUnidade.SelectedItem is not Unidade)
+        {
+            Alertar("Selecione a unidade do serviço.", cbxUnidade);
             return false;
         }
 
