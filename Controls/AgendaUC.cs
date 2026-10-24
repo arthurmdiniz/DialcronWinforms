@@ -2,6 +2,7 @@ using System.ComponentModel;
 using System.Globalization;
 using DialcronWinforms.Data;
 using DialcronWinforms.Data.DAO;
+using DialcronWinforms.Forms;
 using DialcronWinforms.Models;
 
 namespace DialcronWinforms.Controls;
@@ -22,6 +23,7 @@ public partial class AgendaUC : UserControl
     private List<Cliente> _clientes = new();
     private List<Unidade> _unidades = new();
     private List<Profissional> _profissionais = new();
+    private List<Servico> _servicos = new();
     private AgendaItem? _selecionado;
     private int _proximoId = 1;
 
@@ -31,9 +33,21 @@ public partial class AgendaUC : UserControl
 
         dgvAtendimentos.DataSource = _visiveis;
         dgvAtendimentos.SelectionChanged += DgvAtendimentos_SelectionChanged;
-        calendario.DateSelected += Calendario_DateSelected;
-        txtBuscaCliente.TextChanged += TxtBuscaCliente_TextChanged;
+        clbServicos.ItemCheck += ClbServicos_ItemCheck;
         Load += AgendaUC_Load;
+    }
+
+    private void ClbServicos_ItemCheck(object? sender, ItemCheckEventArgs e)
+    {
+        var total = 0m;
+        for (var i = 0; i < clbServicos.Items.Count; i++)
+        {
+            var marcado = i == e.Index ? e.NewValue == CheckState.Checked : clbServicos.GetItemChecked(i);
+            if (marcado)
+                total += (decimal)((Servico)clbServicos.Items[i]).Preco;
+        }
+
+        txtValor.Text = total.ToString("0.00", CultureInfo.InvariantCulture);
     }
 
     private async void AgendaUC_Load(object? sender, EventArgs e)
@@ -44,6 +58,7 @@ public partial class AgendaUC : UserControl
             _clientes = await new ClienteDAO(conexao).GetAllAsync();
             _unidades = await new UnidadeDAO(conexao).GetAllAsync();
             _profissionais = await new ProfissionalDAO(conexao).GetAllAsync();
+            _servicos = (await new ServicoDAO(conexao).GetAllAsync()).Where(s => s.Ativo != "N").ToList();
         }
         catch (Exception ex)
         {
@@ -65,12 +80,12 @@ public partial class AgendaUC : UserControl
         cbxSituacao.DataSource = Situacoes;
         cbxSituacao.DisplayMember = nameof(OpcaoSituacao.Descricao);
 
-        FiltrarPorDia(calendario.SelectionStart);
-    }
+        clbServicos.Items.Clear();
+        clbServicos.DisplayMember = nameof(Servico.Nome);
+        foreach (var servico in _servicos)
+            clbServicos.Items.Add(servico);
 
-    private void Calendario_DateSelected(object? sender, DateRangeEventArgs e)
-    {
-        FiltrarPorDia(e.Start);
+        FiltrarPorDia(DateTime.Today);
     }
 
     private void FiltrarPorDia(DateTime data)
@@ -92,32 +107,20 @@ public partial class AgendaUC : UserControl
         PreencherFormulario(item);
     }
 
-    private void TxtBuscaCliente_TextChanged(object? sender, EventArgs e)
+    private void BtnBuscarCliente_Click(object? sender, EventArgs e)
     {
-        var termo = txtBuscaCliente.Text.Trim();
-        var digitos = FuncoesGerais.OnlyDigits(termo);
+        using var janela = new BuscarClienteForm(_clientes);
+        if (janela.ShowDialog(FindForm()) != DialogResult.OK || janela.ClienteSelecionado is null)
+            return;
 
-        var filtrados = _clientes
-            .Where(c => termo.Length == 0
-                || (c.Nome?.Contains(termo, StringComparison.OrdinalIgnoreCase) ?? false)
-                || (digitos.Length > 0 && TelefoneDigitos(c).Contains(digitos)))
-            .ToList();
-
-        var selecionado = cbxCliente.SelectedItem as Cliente;
-        cbxCliente.DataSource = filtrados;
-        cbxCliente.SelectedItem = filtrados.FirstOrDefault(c => c.ClienteId == selecionado?.ClienteId);
-    }
-
-    private static string TelefoneDigitos(Cliente c)
-    {
-        return (c.DddTelefone?.ToString() ?? string.Empty) + (c.Telefone?.ToString() ?? string.Empty);
+        cbxCliente.SelectedItem = _clientes.FirstOrDefault(c => c.ClienteId == janela.ClienteSelecionado.ClienteId);
     }
 
     private void BtnNovo_Click(object? sender, EventArgs e)
     {
         LimparSelecao();
         LimparFormulario();
-        txtBuscaCliente.Focus();
+        cbxUnidade.Focus();
     }
 
     private void BtnSalvar_Click(object? sender, EventArgs e)
@@ -135,14 +138,14 @@ public partial class AgendaUC : UserControl
             _proximoId++;
             PreencherModelo(novo);
             _itens.Add(novo);
-            FiltrarPorDia(calendario.SelectionStart);
+            FiltrarPorDia(DateTime.Today);
             SelecionarNaGrid(novo);
         }
         else
         {
             PreencherModelo(_selecionado);
             var atual = _selecionado;
-            FiltrarPorDia(calendario.SelectionStart);
+            FiltrarPorDia(DateTime.Today);
             SelecionarNaGrid(atual);
         }
     }
@@ -206,16 +209,16 @@ public partial class AgendaUC : UserControl
         var cadastro = item.Cadastro;
         var belo = item.Belo;
 
-        txtBuscaCliente.Text = string.Empty;
         cbxUnidade.SelectedItem = _unidades.FirstOrDefault(u => u.IdUnidade == cadastro.Unidade);
         cbxCliente.SelectedItem = _clientes.FirstOrDefault(c => c.ClienteId == cadastro.Cliente);
         cbxProfissional.SelectedItem = _profissionais.FirstOrDefault(p => p.Id == belo.Profissional);
         cbxSituacao.SelectedItem = Situacoes.FirstOrDefault(s => s.Codigo == belo.Situacao) ?? Situacoes[0];
         dtpAgendamento.Value = item.Hora == DateTime.MinValue ? DateTime.Now : item.Hora;
         txtDescricao.Text = cadastro.Descricao;
+        for (var i = 0; i < clbServicos.Items.Count; i++)
+            clbServicos.SetItemChecked(i, item.ServicosIds.Contains(((Servico)clbServicos.Items[i]).Id));
         txtValor.Text = belo.Valor.ToString("0.00", CultureInfo.InvariantCulture);
         chkPago.Checked = belo.Pago == 1;
-        txtObservacao.Text = belo.Observacao;
     }
 
     private void PreencherModelo(AgendaItem item)
@@ -235,24 +238,24 @@ public partial class AgendaUC : UserControl
         belo.Situacao = (cbxSituacao.SelectedItem as OpcaoSituacao)?.Codigo ?? Situacoes[0].Codigo;
         belo.Valor = (double)(FuncoesGerais.LerDecimal(txtValor.Text) ?? 0m);
         belo.Pago = chkPago.Checked ? 1 : 0;
-        belo.Observacao = string.IsNullOrWhiteSpace(txtObservacao.Text) ? null : txtObservacao.Text.Trim();
 
+        item.ServicosIds = clbServicos.CheckedItems.Cast<Servico>().Select(s => s.Id).ToList();
         item.NomeCliente = cliente?.Nome ?? string.Empty;
         item.NomeProfissional = profissional?.Nome ?? string.Empty;
     }
 
     private void LimparFormulario()
     {
-        txtBuscaCliente.Text = string.Empty;
         txtDescricao.Text = string.Empty;
+        for (var i = 0; i < clbServicos.Items.Count; i++)
+            clbServicos.SetItemChecked(i, false);
         txtValor.Text = string.Empty;
-        txtObservacao.Text = string.Empty;
         chkPago.Checked = false;
         cbxCliente.SelectedIndex = -1;
         cbxUnidade.SelectedIndex = -1;
         cbxProfissional.SelectedIndex = -1;
         cbxSituacao.SelectedItem = Situacoes[0];
-        dtpAgendamento.Value = calendario.SelectionStart.Date.Add(DateTime.Now.TimeOfDay);
+        dtpAgendamento.Value = DateTime.Today.Add(DateTime.Now.TimeOfDay);
     }
 
     private sealed record OpcaoSituacao(string Codigo, string Descricao);
@@ -266,6 +269,8 @@ public partial class AgendaUC : UserControl
         public string NomeCliente { get; set; } = string.Empty;
 
         public string NomeProfissional { get; set; } = string.Empty;
+
+        public List<int> ServicosIds { get; set; } = new();
 
         public DateTime Data => Hora.Date;
 
