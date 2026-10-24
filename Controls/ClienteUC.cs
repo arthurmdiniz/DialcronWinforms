@@ -1,5 +1,7 @@
 using System.ComponentModel;
 using System.Globalization;
+using DialcronWinforms.Data;
+using DialcronWinforms.Data.DAO;
 using DialcronWinforms.Models;
 
 namespace DialcronWinforms.Controls;
@@ -8,7 +10,6 @@ public partial class ClienteUC : UserControl
 {
     private readonly BindingList<Cliente> _clientes = new();
     private Cliente? _selecionado;
-    private int _proximoId = 1;
 
     public ClienteUC()
     {
@@ -16,6 +17,29 @@ public partial class ClienteUC : UserControl
 
         dgvClientes.DataSource = _clientes;
         dgvClientes.SelectionChanged += DgvClientes_SelectionChanged;
+        Load += OnClienteUCLoad;
+    }
+
+    private async void OnClienteUCLoad(object? sender, EventArgs e)
+    {
+        try
+        {
+            var dao = await CriarDaoAsync();
+            var clientes = await dao.GetAllAsync();
+
+            _clientes.Clear();
+            foreach (var cliente in clientes)
+                _clientes.Add(cliente);
+        }
+        catch (Exception ex)
+        {
+            MessageBox.Show($"Não foi possível carregar os clientes: {ex.Message}", "Clientes", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        }
+    }
+
+    private static async Task<ClienteDAO> CriarDaoAsync()
+    {
+        return new ClienteDAO(await Database.Instance.InitializeAsync());
     }
 
     private void DgvClientes_SelectionChanged(object? sender, EventArgs e)
@@ -34,23 +58,65 @@ public partial class ClienteUC : UserControl
         txtNome.Focus();
     }
 
-    private void BtnSalvar_Click(object? sender, EventArgs e)
+    private async void BtnSalvar_Click(object? sender, EventArgs e)
     {
         if (!ValidarFormulario())
             return;
 
+        try
+        {
+            var dao = await CriarDaoAsync();
+
+            if (_selecionado is null)
+            {
+                var novo = new Cliente();
+                PreencherModelo(novo);
+                await dao.InsertAsync(novo);
+                _clientes.Add(novo);
+                _selecionado = novo;
+                SelecionarNaGrid(novo);
+            }
+            else
+            {
+                PreencherModelo(_selecionado);
+                await dao.UpdateAsync(_selecionado);
+                dgvClientes.Refresh();
+            }
+        }
+        catch (Exception ex)
+        {
+            MessageBox.Show($"Não foi possível salvar o cliente: {ex.Message}", "Clientes", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        }
+    }
+
+    private async void BtnExcluir_Click(object? sender, EventArgs e)
+    {
         if (_selecionado is null)
         {
-            var novo = new Cliente { ClienteId = _proximoId++ };
-            PreencherModelo(novo);
-            _clientes.Add(novo);
-            _selecionado = novo;
-            SelecionarNaGrid(novo);
+            MessageBox.Show("Selecione um cliente na lista para excluir.", "Clientes", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            return;
         }
-        else
+
+        var confirmacao = MessageBox.Show(
+            $"Excluir o cliente \"{_selecionado.Nome}\"?",
+            "Clientes",
+            MessageBoxButtons.YesNo,
+            MessageBoxIcon.Question);
+
+        if (confirmacao != DialogResult.Yes)
+            return;
+
+        try
         {
-            PreencherModelo(_selecionado);
-            dgvClientes.Refresh();
+            var dao = await CriarDaoAsync();
+            await dao.DeleteAsync(_selecionado.ClienteId);
+            _clientes.Remove(_selecionado);
+            LimparSelecao();
+            LimparFormulario();
+        }
+        catch (Exception ex)
+        {
+            MessageBox.Show($"Não foi possível excluir o cliente: {ex.Message}", "Clientes", MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
     }
 
