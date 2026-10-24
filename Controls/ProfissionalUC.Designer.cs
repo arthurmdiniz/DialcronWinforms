@@ -9,6 +9,8 @@ partial class ProfissionalUC
     private DataGridView dgvProfissionais;
     private DataGridViewTextBoxColumn colId;
     private DataGridViewTextBoxColumn colNome;
+    private DataGridViewTextBoxColumn colDddCelular;
+    private DataGridViewTextBoxColumn colCelular;
     private GroupBox grpDados;
     private Label lblUnidade;
     private ComboBox cbxUnidade;
@@ -48,6 +50,8 @@ partial class ProfissionalUC
         dgvProfissionais = new DataGridView();
         colId = new DataGridViewTextBoxColumn();
         colNome = new DataGridViewTextBoxColumn();
+        colDddCelular = new DataGridViewTextBoxColumn();
+        colCelular = new DataGridViewTextBoxColumn();
         grpDados = new GroupBox();
         lblUnidade = new Label();
         cbxUnidade = new ComboBox();
@@ -107,7 +111,7 @@ partial class ProfissionalUC
         dgvProfissionais.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
         dgvProfissionais.BackgroundColor = Cores.White;
         dgvProfissionais.BorderStyle = BorderStyle.None;
-        dgvProfissionais.Columns.AddRange(new DataGridViewColumn[] { colId, colNome });
+        dgvProfissionais.Columns.AddRange(new DataGridViewColumn[] { colId, colNome, colDddCelular, colCelular });
         dgvProfissionais.Font = new Font("Segoe UI", 9F);
         dgvProfissionais.Location = new Point(12, 25);
         dgvProfissionais.MultiSelect = false;
@@ -121,7 +125,7 @@ partial class ProfissionalUC
         // colId
         // 
         colId.DataPropertyName = "Id";
-        colId.FillWeight = 20F;
+        colId.FillWeight = 15F;
         colId.HeaderText = "ID";
         colId.Name = "colId";
         colId.ReadOnly = true;
@@ -129,10 +133,26 @@ partial class ProfissionalUC
         // colNome
         // 
         colNome.DataPropertyName = "Nome";
-        colNome.FillWeight = 80F;
+        colNome.FillWeight = 55F;
         colNome.HeaderText = "Nome";
         colNome.Name = "colNome";
         colNome.ReadOnly = true;
+        // 
+        // colDddCelular
+        // 
+        colDddCelular.DataPropertyName = "DddCelular";
+        colDddCelular.FillWeight = 10F;
+        colDddCelular.HeaderText = "DDD Celular";
+        colDddCelular.Name = "colDddCelular";
+        colDddCelular.ReadOnly = true;
+        // 
+        // colCelular
+        // 
+        colCelular.DataPropertyName = "Celular";
+        colCelular.FillWeight = 20F;
+        colCelular.HeaderText = "Celular";
+        colCelular.Name = "colCelular";
+        colCelular.ReadOnly = true;
         // 
         // grpDados
         // 
