@@ -300,6 +300,7 @@ partial class AgendaUC
         dtpAgendamento.Format = DateTimePickerFormat.Custom;
         dtpAgendamento.Location = new Point(206, 98);
         dtpAgendamento.Name = "dtpAgendamento";
+        dtpAgendamento.ShowCheckBox = true;
         dtpAgendamento.Size = new Size(160, 23);
         dtpAgendamento.TabIndex = 8;
         // 

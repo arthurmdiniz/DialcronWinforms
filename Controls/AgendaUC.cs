@@ -33,6 +33,7 @@ public partial class AgendaUC : UserControl
         dgvAtendimentos.DataSource = _visiveis;
         dgvAtendimentos.SelectionChanged += DgvAtendimentos_SelectionChanged;
         clbServicos.ItemCheck += ClbServicos_ItemCheck;
+        txtValor.Leave += TxtValor_Leave;
         Load += AgendaUC_Load;
         dtpDataAgenda.ValueChanged += async (_, _) => await FiltrarPorDiaAsync(dtpDataAgenda.Value.Date);
         Resize += (_, _) => CentralizarConteudo();
@@ -57,7 +58,18 @@ public partial class AgendaUC : UserControl
                 total += (decimal)((Servico)clbServicos.Items[i]).Preco;
         }
 
-        txtValor.Text = total.ToString("0.00", CultureInfo.InvariantCulture);
+        txtValor.Text = FormatarValor(total);
+    }
+
+    private void TxtValor_Leave(object? sender, EventArgs e)
+    {
+        if (FuncoesGerais.LerDecimal(txtValor.Text) is decimal valor)
+            txtValor.Text = FormatarValor(valor);
+    }
+
+    private static string FormatarValor(decimal valor)
+    {
+        return string.Create(CultureInfo.InvariantCulture, $"R${valor:0.00}");
     }
 
     private async void AgendaUC_Load(object? sender, EventArgs e)
@@ -276,9 +288,15 @@ public partial class AgendaUC : UserControl
             return false;
         }
 
-        if (string.IsNullOrWhiteSpace(txtDescricao.Text))
+        if (!dtpAgendamento.Checked)
         {
-            Alertar("Informe a descrição do atendimento.", txtDescricao);
+            Alertar("Informe a data e o horário do atendimento.", dtpAgendamento);
+            return false;
+        }
+
+        if (clbServicos.CheckedItems.Count == 0)
+        {
+            Alertar("Selecione pelo menos um serviço.", clbServicos);
             return false;
         }
 
@@ -307,10 +325,11 @@ public partial class AgendaUC : UserControl
         cbxProfissional.SelectedItem = _profissionais.FirstOrDefault(p => p.Id == belo.Profissional);
         cbxSituacao.SelectedItem = Situacoes.FirstOrDefault(s => s.Codigo == belo.Situacao) ?? Situacoes[0];
         dtpAgendamento.Value = item.Hora == DateTime.MinValue ? DateTime.Now : item.Hora;
+        dtpAgendamento.Checked = true;
         txtDescricao.Text = cadastro.Descricao;
         for (var i = 0; i < clbServicos.Items.Count; i++)
             clbServicos.SetItemChecked(i, item.ServicosIds.Contains(((Servico)clbServicos.Items[i]).Id));
-        txtValor.Text = belo.Valor.ToString("0.00", CultureInfo.InvariantCulture);
+        txtValor.Text = FormatarValor((decimal)belo.Valor);
         chkPago.Checked = belo.Pago == 1;
     }
 
@@ -349,6 +368,7 @@ public partial class AgendaUC : UserControl
         cbxProfissional.SelectedIndex = -1;
         cbxSituacao.SelectedItem = Situacoes[0];
         dtpAgendamento.Value = dtpDataAgenda.Value.Date.Add(DateTime.Now.TimeOfDay);
+        dtpAgendamento.Checked = false;
     }
 
     private sealed record OpcaoSituacao(string Codigo, string Descricao);
