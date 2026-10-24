@@ -162,7 +162,7 @@ partial class ServicoUC
         lblUnidade.AutoSize = true;
         lblUnidade.Font = new Font("Segoe UI", 9F);
         lblUnidade.ForeColor = Color.FromArgb(59, 48, 50);
-        lblUnidade.Location = new Point(330, 28);
+        lblUnidade.Location = new Point(12, 28);
         lblUnidade.Name = "lblUnidade";
         lblUnidade.Size = new Size(51, 15);
         lblUnidade.TabIndex = 0;
@@ -173,7 +173,7 @@ partial class ServicoUC
         cbxUnidade.DropDownStyle = ComboBoxStyle.DropDownList;
         cbxUnidade.Font = new Font("Segoe UI", 9F);
         cbxUnidade.FormattingEnabled = true;
-        cbxUnidade.Location = new Point(330, 46);
+        cbxUnidade.Location = new Point(12, 46);
         cbxUnidade.Name = "cbxUnidade";
         cbxUnidade.Size = new Size(270, 23);
         cbxUnidade.TabIndex = 1;
@@ -183,7 +183,7 @@ partial class ServicoUC
         lblNome.AutoSize = true;
         lblNome.Font = new Font("Segoe UI", 9F);
         lblNome.ForeColor = Color.FromArgb(59, 48, 50);
-        lblNome.Location = new Point(12, 28);
+        lblNome.Location = new Point(294, 28);
         lblNome.Name = "lblNome";
         lblNome.Size = new Size(40, 15);
         lblNome.TabIndex = 2;
@@ -192,7 +192,7 @@ partial class ServicoUC
         // txtNome
         // 
         txtNome.Font = new Font("Segoe UI", 9F);
-        txtNome.Location = new Point(12, 46);
+        txtNome.Location = new Point(294, 46);
         txtNome.Name = "txtNome";
         txtNome.Size = new Size(300, 23);
         txtNome.TabIndex = 3;
