@@ -1,4 +1,6 @@
 using System.ComponentModel;
+using DialcronWinforms.Data;
+using DialcronWinforms.Data.DAO;
 using DialcronWinforms.Models;
 
 namespace DialcronWinforms.Controls;
@@ -8,7 +10,6 @@ public partial class ProfissionalUC : UserControl
     private readonly BindingList<Profissional> _profissionais = new();
     private readonly BindingList<Unidade> _unidades = new();
     private Profissional? _selecionado;
-    private int _proximoId = 1;
 
     public ProfissionalUC()
     {
@@ -21,6 +22,34 @@ public partial class ProfissionalUC : UserControl
 
         dgvProfissionais.DataSource = _profissionais;
         dgvProfissionais.SelectionChanged += DgvProfissionais_SelectionChanged;
+        Load += OnProfissionalUCLoad;
+    }
+
+    private async void OnProfissionalUCLoad(object? sender, EventArgs e)
+    {
+        try
+        {
+            var connection = await Database.Instance.InitializeAsync();
+            var unidades = await new UnidadeDAO(connection).GetAllAsync();
+            var profissionais = await new ProfissionalDAO(connection).GetAllAsync();
+
+            _unidades.Clear();
+            foreach (var unidade in unidades)
+                _unidades.Add(unidade);
+
+            _profissionais.Clear();
+            foreach (var profissional in profissionais)
+                _profissionais.Add(profissional);
+        }
+        catch (Exception ex)
+        {
+            MessageBox.Show($"Não foi possível carregar os profissionais: {ex.Message}", "Profissionais", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        }
+    }
+
+    private static async Task<ProfissionalDAO> CriarDaoAsync()
+    {
+        return new ProfissionalDAO(await Database.Instance.InitializeAsync());
     }
 
     private void DgvProfissionais_SelectionChanged(object? sender, EventArgs e)
@@ -39,7 +68,7 @@ public partial class ProfissionalUC : UserControl
         txtNome.Focus();
     }
 
-    private void BtnSalvar_Click(object? sender, EventArgs e)
+    private async void BtnSalvar_Click(object? sender, EventArgs e)
     {
         var nome = txtNome.Text.Trim();
 
@@ -50,18 +79,67 @@ public partial class ProfissionalUC : UserControl
             return;
         }
 
+        if (cbxUnidade.SelectedItem is not Unidade)
+        {
+            MessageBox.Show("Selecione a unidade do profissional.", "Profissionais", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            cbxUnidade.Focus();
+            return;
+        }
+
+        try
+        {
+            var dao = await CriarDaoAsync();
+
+            if (_selecionado is null)
+            {
+                var novo = new Profissional();
+                PreencherModelo(novo);
+                await dao.InsertAsync(novo);
+                _profissionais.Add(novo);
+                _selecionado = novo;
+                SelecionarNaGrid(novo);
+            }
+            else
+            {
+                PreencherModelo(_selecionado);
+                await dao.UpdateAsync(_selecionado);
+                dgvProfissionais.Refresh();
+            }
+        }
+        catch (Exception ex)
+        {
+            MessageBox.Show($"Não foi possível salvar o profissional: {ex.Message}", "Profissionais", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        }
+    }
+
+    private async void BtnExcluir_Click(object? sender, EventArgs e)
+    {
         if (_selecionado is null)
         {
-            var novo = new Profissional { Id = _proximoId++ };
-            PreencherModelo(novo);
-            _profissionais.Add(novo);
-            _selecionado = novo;
-            SelecionarNaGrid(novo);
+            MessageBox.Show("Selecione um profissional na lista para excluir.", "Profissionais", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            return;
         }
-        else
+
+        var confirmacao = MessageBox.Show(
+            $"Excluir o profissional \"{_selecionado.Nome}\"?",
+            "Profissionais",
+            MessageBoxButtons.YesNo,
+            MessageBoxIcon.Question);
+
+        if (confirmacao != DialogResult.Yes)
+            return;
+
+        try
         {
-            PreencherModelo(_selecionado);
-            dgvProfissionais.Refresh();
+            var dao = await CriarDaoAsync();
+            await dao.DeleteAsync(_selecionado.Id);
+            _profissionais.Remove(_selecionado);
+            LimparSelecao();
+            LimparFormulario();
+        }
+        catch (Exception ex)
+        {
+            MessageBox.Show($"Não foi possível excluir o profissional: {ex.Message}", "Profissionais", MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
     }
 
