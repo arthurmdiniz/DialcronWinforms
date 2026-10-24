@@ -18,14 +18,12 @@ public partial class AgendaUC : UserControl
         new("n", "Não compareceu"),
     };
 
-    private readonly List<AgendaItem> _itens = new();
     private readonly BindingList<AgendaItem> _visiveis = new();
     private List<Cliente> _clientes = new();
     private List<Unidade> _unidades = new();
     private List<Profissional> _profissionais = new();
     private List<Servico> _servicos = new();
     private AgendaItem? _selecionado;
-    private int _proximoId = 1;
 
     public AgendaUC()
     {
@@ -35,7 +33,7 @@ public partial class AgendaUC : UserControl
         dgvAtendimentos.SelectionChanged += DgvAtendimentos_SelectionChanged;
         clbServicos.ItemCheck += ClbServicos_ItemCheck;
         Load += AgendaUC_Load;
-        dtpDataAgenda.ValueChanged += (_, _) => FiltrarPorDia(dtpDataAgenda.Value.Date);
+        dtpDataAgenda.ValueChanged += async (_, _) => await FiltrarPorDiaAsync(dtpDataAgenda.Value.Date);
         Resize += (_, _) => CentralizarConteudo();
     }
 
@@ -96,17 +94,47 @@ public partial class AgendaUC : UserControl
         foreach (var servico in _servicos)
             clbServicos.Items.Add(servico);
 
-        FiltrarPorDia(dtpDataAgenda.Value.Date);
+        await FiltrarPorDiaAsync(dtpDataAgenda.Value.Date);
     }
 
-    private void FiltrarPorDia(DateTime data)
+    private async Task FiltrarPorDiaAsync(DateTime data)
     {
         LimparSelecao();
         LimparFormulario();
         _visiveis.Clear();
 
-        foreach (var item in _itens.Where(i => i.Data == data.Date))
-            _visiveis.Add(item);
+        try
+        {
+            var conexao = await Database.Instance.InitializeAsync();
+            var belos = await new BelAtendimentoDAO(conexao).GetByDataAsync(data);
+            var atendimentoDao = new AtendimentoDAO(conexao);
+            var servicoDao = new AtendimentoServicoDAO(conexao);
+
+            foreach (var belo in belos.OrderBy(b => b.DtaAtendimento))
+            {
+                var cadastro = await atendimentoDao.GetByIdAsync(belo.Atendimento);
+                if (cadastro is null)
+                    continue;
+
+                var servicos = await servicoDao.GetByAtendimentoAsync(belo.Id);
+
+                _visiveis.Add(new AgendaItem
+                {
+                    Cadastro = cadastro,
+                    Belo = belo,
+                    ServicosIds = servicos.Select(s => s.Servico).ToList(),
+                    NomeCliente = _clientes.FirstOrDefault(c => c.ClienteId == cadastro.Cliente)?.Nome ?? string.Empty,
+                    NomeProfissional = _profissionais.FirstOrDefault(p => p.Id == belo.Profissional)?.Nome ?? string.Empty,
+                });
+            }
+        }
+        catch (Exception ex)
+        {
+            MessageBox.Show($"Não foi possível carregar os atendimentos: {ex.Message}", "Agenda", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        }
+
+        LimparSelecao();
+        LimparFormulario();
     }
 
     private void DgvAtendimentos_SelectionChanged(object? sender, EventArgs e)
@@ -134,30 +162,94 @@ public partial class AgendaUC : UserControl
         cbxUnidade.Focus();
     }
 
-    private void BtnSalvar_Click(object? sender, EventArgs e)
+    private async void BtnSalvar_Click(object? sender, EventArgs e)
     {
         if (!ValidarFormulario())
             return;
 
+        try
+        {
+            var conexao = await Database.Instance.InitializeAsync();
+            var atendimentoDao = new AtendimentoDAO(conexao);
+            var belDao = new BelAtendimentoDAO(conexao);
+            var servicoDao = new AtendimentoServicoDAO(conexao);
+
+            if (_selecionado is null)
+            {
+                var agora = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture);
+                var novo = new AgendaItem
+                {
+                    Cadastro = new Atendimento { DtaCriacao = agora },
+                    Belo = new BelAtendimento { DtaCriacao = agora },
+                };
+                PreencherModelo(novo);
+
+                await atendimentoDao.InsertAsync(novo.Cadastro);
+                novo.Belo.Atendimento = novo.Cadastro.Id;
+                await belDao.InsertAsync(novo.Belo);
+                await InserirServicosAsync(servicoDao, novo);
+
+                await FiltrarPorDiaAsync(dtpDataAgenda.Value.Date);
+            }
+            else
+            {
+                PreencherModelo(_selecionado);
+                await atendimentoDao.UpdateAsync(_selecionado.Cadastro);
+                await belDao.UpdateAsync(_selecionado.Belo);
+                await servicoDao.DeleteByAtendimentoAsync(_selecionado.Belo.Id);
+                await InserirServicosAsync(servicoDao, _selecionado);
+
+                await FiltrarPorDiaAsync(dtpDataAgenda.Value.Date);
+            }
+        }
+        catch (Exception ex)
+        {
+            MessageBox.Show($"Não foi possível salvar o atendimento: {ex.Message}", "Agenda", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        }
+    }
+
+    private static async Task InserirServicosAsync(AtendimentoServicoDAO servicoDao, AgendaItem item)
+    {
+        foreach (var servicoId in item.ServicosIds)
+        {
+            await servicoDao.InsertAsync(new AtendimentoServico
+            {
+                Atendimento = item.Belo.Id,
+                Servico = servicoId,
+            });
+        }
+    }
+
+    private async void BtnExcluir_Click(object? sender, EventArgs e)
+    {
         if (_selecionado is null)
         {
-            var novo = new AgendaItem
-            {
-                Cadastro = new Atendimento { Id = _proximoId },
-                Belo = new BelAtendimento { Id = _proximoId },
-            };
-            _proximoId++;
-            PreencherModelo(novo);
-            _itens.Add(novo);
-            FiltrarPorDia(dtpDataAgenda.Value.Date);
-            SelecionarNaGrid(novo);
+            MessageBox.Show("Selecione um atendimento na lista para excluir.", "Agenda", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            return;
         }
-        else
+
+        var confirmacao = MessageBox.Show(
+            $"Excluir o atendimento de \"{_selecionado.NomeCliente}\"?",
+            "Agenda",
+            MessageBoxButtons.YesNo,
+            MessageBoxIcon.Question);
+
+        if (confirmacao != DialogResult.Yes)
+            return;
+
+        try
         {
-            PreencherModelo(_selecionado);
-            var atual = _selecionado;
-            FiltrarPorDia(dtpDataAgenda.Value.Date);
-            SelecionarNaGrid(atual);
+            var conexao = await Database.Instance.InitializeAsync();
+            await new AtendimentoServicoDAO(conexao).DeleteByAtendimentoAsync(_selecionado.Belo.Id);
+            await new BelAtendimentoDAO(conexao).DeleteAsync(_selecionado.Belo.Id);
+            await new AtendimentoDAO(conexao).DeleteAsync(_selecionado.Cadastro.Id);
+
+            LimparSelecao();
+            await FiltrarPorDiaAsync(dtpDataAgenda.Value.Date);
+        }
+        catch (Exception ex)
+        {
+            MessageBox.Show($"Não foi possível excluir o atendimento: {ex.Message}", "Agenda", MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
     }
 
@@ -198,21 +290,8 @@ public partial class AgendaUC : UserControl
 
     private void LimparSelecao()
     {
-        _selecionado = null;
         dgvAtendimentos.ClearSelection();
-    }
-
-    private void SelecionarNaGrid(AgendaItem item)
-    {
-        foreach (DataGridViewRow row in dgvAtendimentos.Rows)
-        {
-            if (row.DataBoundItem == item)
-            {
-                row.Selected = true;
-                dgvAtendimentos.CurrentCell = row.Cells[0];
-                return;
-            }
-        }
+        _selecionado = null;
     }
 
     private void PreencherFormulario(AgendaItem item)
