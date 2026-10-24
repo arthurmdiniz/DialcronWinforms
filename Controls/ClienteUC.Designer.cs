@@ -264,7 +264,7 @@ partial class ClienteUC
         btnNovo.FlatStyle = FlatStyle.Flat;
         btnNovo.Font = new Font("Segoe UI", 9F);
         btnNovo.ForeColor = Cores.PrimaryDarkText;
-        btnNovo.Location = new Point(12, 205);
+        btnNovo.Location = new Point(177, 205);
         btnNovo.Name = "btnNovo";
         btnNovo.Size = new Size(130, 32);
         btnNovo.TabIndex = 10;
@@ -278,7 +278,7 @@ partial class ClienteUC
         btnSalvar.FlatStyle = FlatStyle.Flat;
         btnSalvar.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
         btnSalvar.ForeColor = Cores.White;
-        btnSalvar.Location = new Point(152, 205);
+        btnSalvar.Location = new Point(317, 205);
         btnSalvar.Name = "btnSalvar";
         btnSalvar.Size = new Size(130, 32);
         btnSalvar.TabIndex = 11;

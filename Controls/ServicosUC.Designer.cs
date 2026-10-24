@@ -255,7 +255,7 @@ partial class ServicoUC
         btnNovo.FlatStyle = FlatStyle.Flat;
         btnNovo.Font = new Font("Segoe UI", 9F);
         btnNovo.ForeColor = Color.FromArgb(59, 48, 50);
-        btnNovo.Location = new Point(12, 160);
+        btnNovo.Location = new Point(177, 160);
         btnNovo.Name = "btnNovo";
         btnNovo.Size = new Size(130, 32);
         btnNovo.TabIndex = 19;
@@ -269,7 +269,7 @@ partial class ServicoUC
         btnSalvar.FlatStyle = FlatStyle.Flat;
         btnSalvar.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
         btnSalvar.ForeColor = Color.FromArgb(255, 255, 255);
-        btnSalvar.Location = new Point(152, 160);
+        btnSalvar.Location = new Point(317, 160);
         btnSalvar.Name = "btnSalvar";
         btnSalvar.Size = new Size(130, 32);
         btnSalvar.TabIndex = 20;

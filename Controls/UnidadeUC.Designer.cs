@@ -520,7 +520,7 @@ partial class UnidadeUC
         btnIncluir.FlatStyle = FlatStyle.Flat;
         btnIncluir.Font = new Font("Segoe UI", 9F);
         btnIncluir.ForeColor = Color.FromArgb(59, 48, 50);
-        btnIncluir.Location = new Point(12, 258);
+        btnIncluir.Location = new Point(107, 258);
         btnIncluir.Name = "btnIncluir";
         btnIncluir.Size = new Size(130, 32);
         btnIncluir.TabIndex = 32;
@@ -534,7 +534,7 @@ partial class UnidadeUC
         btnSalvar.FlatStyle = FlatStyle.Flat;
         btnSalvar.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
         btnSalvar.ForeColor = Color.FromArgb(255, 255, 255);
-        btnSalvar.Location = new Point(152, 258);
+        btnSalvar.Location = new Point(247, 258);
         btnSalvar.Name = "btnSalvar";
         btnSalvar.Size = new Size(130, 32);
         btnSalvar.TabIndex = 33;
@@ -548,7 +548,7 @@ partial class UnidadeUC
         btnCancelar.FlatStyle = FlatStyle.Flat;
         btnCancelar.Font = new Font("Segoe UI", 9F);
         btnCancelar.ForeColor = Color.FromArgb(59, 48, 50);
-        btnCancelar.Location = new Point(432, 258);
+        btnCancelar.Location = new Point(387, 258);
         btnCancelar.Name = "btnCancelar";
         btnCancelar.Size = new Size(130, 32);
         btnCancelar.TabIndex = 34;

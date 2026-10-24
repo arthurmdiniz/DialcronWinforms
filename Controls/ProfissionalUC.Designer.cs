@@ -383,7 +383,7 @@ partial class ProfissionalUC
         btnNovo.FlatStyle = FlatStyle.Flat;
         btnNovo.Font = new Font("Segoe UI", 9F);
         btnNovo.ForeColor = Cores.Gray900;
-        btnNovo.Location = new Point(12, 210);
+        btnNovo.Location = new Point(177, 210);
         btnNovo.Name = "btnNovo";
         btnNovo.Size = new Size(130, 32);
         btnNovo.TabIndex = 19;
@@ -397,7 +397,7 @@ partial class ProfissionalUC
         btnSalvar.FlatStyle = FlatStyle.Flat;
         btnSalvar.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
         btnSalvar.ForeColor = Cores.White;
-        btnSalvar.Location = new Point(152, 210);
+        btnSalvar.Location = new Point(317, 210);
         btnSalvar.Name = "btnSalvar";
         btnSalvar.Size = new Size(130, 32);
         btnSalvar.TabIndex = 20;
