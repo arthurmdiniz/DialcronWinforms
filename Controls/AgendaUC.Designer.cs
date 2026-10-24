@@ -5,6 +5,7 @@ partial class AgendaUC
     private System.ComponentModel.IContainer components = null;
 
     private Label lblTitulo;
+    private DateTimePicker dtpDataAgenda;
     private GroupBox grpAtendimentos;
     private DataGridView dgvAtendimentos;
     private DataGridViewTextBoxColumn colDataHora;
@@ -46,6 +47,7 @@ partial class AgendaUC
     private void InitializeComponent()
     {
         lblTitulo = new Label();
+        dtpDataAgenda = new DateTimePicker();
         grpAtendimentos = new GroupBox();
         dgvAtendimentos = new DataGridView();
         colDataHora = new DataGridViewTextBoxColumn();
@@ -91,6 +93,15 @@ partial class AgendaUC
         lblTitulo.TabIndex = 0;
         lblTitulo.Text = "Agenda";
         // 
+        // dtpDataAgenda
+        // 
+        dtpDataAgenda.Font = new Font("Segoe UI", 9F);
+        dtpDataAgenda.Format = DateTimePickerFormat.Short;
+        dtpDataAgenda.Location = new Point(440, 14);
+        dtpDataAgenda.Name = "dtpDataAgenda";
+        dtpDataAgenda.Size = new Size(120, 23);
+        dtpDataAgenda.TabIndex = 0;
+        // 
         // grpAtendimentos
         // 
         grpAtendimentos.BackColor = Cores.White;
@@ -99,7 +110,7 @@ partial class AgendaUC
         grpAtendimentos.ForeColor = Cores.Gray600;
         grpAtendimentos.Location = new Point(15, 50);
         grpAtendimentos.Name = "grpAtendimentos";
-        grpAtendimentos.Size = new Size(624, 200);
+        grpAtendimentos.Size = new Size(560, 170);
         grpAtendimentos.TabIndex = 2;
         grpAtendimentos.TabStop = false;
         grpAtendimentos.Text = "Atendimentos do dia";
@@ -120,7 +131,7 @@ partial class AgendaUC
         dgvAtendimentos.ReadOnly = true;
         dgvAtendimentos.RowHeadersVisible = false;
         dgvAtendimentos.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-        dgvAtendimentos.Size = new Size(600, 165);
+        dgvAtendimentos.Size = new Size(536, 135);
         dgvAtendimentos.TabIndex = 0;
         // 
         // colDataHora
@@ -184,9 +195,9 @@ partial class AgendaUC
         grpDados.Controls.Add(btnSalvar);
         grpDados.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
         grpDados.ForeColor = Cores.Gray600;
-        grpDados.Location = new Point(15, 260);
+        grpDados.Location = new Point(15, 230);
         grpDados.Name = "grpDados";
-        grpDados.Size = new Size(624, 418);
+        grpDados.Size = new Size(560, 418);
         grpDados.TabIndex = 3;
         grpDados.TabStop = false;
         grpDados.Text = "Atendimento";
@@ -209,7 +220,7 @@ partial class AgendaUC
         cbxUnidade.FormattingEnabled = true;
         cbxUnidade.Location = new Point(12, 46);
         cbxUnidade.Name = "cbxUnidade";
-        cbxUnidade.Size = new Size(280, 23);
+        cbxUnidade.Size = new Size(260, 23);
         cbxUnidade.TabIndex = 1;
         // 
         // lblCliente
@@ -217,7 +228,7 @@ partial class AgendaUC
         lblCliente.AutoSize = true;
         lblCliente.Font = new Font("Segoe UI", 9F);
         lblCliente.ForeColor = Cores.PrimaryDarkText;
-        lblCliente.Location = new Point(306, 28);
+        lblCliente.Location = new Point(286, 28);
         lblCliente.Name = "lblCliente";
         lblCliente.Size = new Size(39, 15);
         lblCliente.TabIndex = 2;
@@ -228,9 +239,9 @@ partial class AgendaUC
         cbxCliente.DropDownStyle = ComboBoxStyle.DropDownList;
         cbxCliente.Font = new Font("Segoe UI", 9F);
         cbxCliente.FormattingEnabled = true;
-        cbxCliente.Location = new Point(306, 46);
+        cbxCliente.Location = new Point(286, 46);
         cbxCliente.Name = "cbxCliente";
-        cbxCliente.Size = new Size(236, 23);
+        cbxCliente.Size = new Size(206, 23);
         cbxCliente.TabIndex = 3;
         // 
         // btnBuscarCliente
@@ -239,7 +250,7 @@ partial class AgendaUC
         btnBuscarCliente.FlatStyle = FlatStyle.Flat;
         btnBuscarCliente.Font = new Font("Segoe UI Emoji", 9F);
         btnBuscarCliente.ForeColor = Cores.PrimaryDarkText;
-        btnBuscarCliente.Location = new Point(548, 45);
+        btnBuscarCliente.Location = new Point(498, 45);
         btnBuscarCliente.Name = "btnBuscarCliente";
         btnBuscarCliente.Size = new Size(34, 25);
         btnBuscarCliente.TabIndex = 4;
@@ -265,7 +276,7 @@ partial class AgendaUC
         cbxProfissional.FormattingEnabled = true;
         cbxProfissional.Location = new Point(12, 98);
         cbxProfissional.Name = "cbxProfissional";
-        cbxProfissional.Size = new Size(200, 23);
+        cbxProfissional.Size = new Size(180, 23);
         cbxProfissional.TabIndex = 6;
         // 
         // lblDataHora
@@ -273,7 +284,7 @@ partial class AgendaUC
         lblDataHora.AutoSize = true;
         lblDataHora.Font = new Font("Segoe UI", 9F);
         lblDataHora.ForeColor = Cores.PrimaryDarkText;
-        lblDataHora.Location = new Point(222, 80);
+        lblDataHora.Location = new Point(206, 80);
         lblDataHora.Name = "lblDataHora";
         lblDataHora.Size = new Size(82, 15);
         lblDataHora.TabIndex = 7;
@@ -284,9 +295,9 @@ partial class AgendaUC
         dtpAgendamento.CustomFormat = "dd/MM/yyyy HH:mm";
         dtpAgendamento.Font = new Font("Segoe UI", 9F);
         dtpAgendamento.Format = DateTimePickerFormat.Custom;
-        dtpAgendamento.Location = new Point(222, 98);
+        dtpAgendamento.Location = new Point(206, 98);
         dtpAgendamento.Name = "dtpAgendamento";
-        dtpAgendamento.Size = new Size(180, 23);
+        dtpAgendamento.Size = new Size(160, 23);
         dtpAgendamento.TabIndex = 8;
         // 
         // lblSituacao
@@ -294,7 +305,7 @@ partial class AgendaUC
         lblSituacao.AutoSize = true;
         lblSituacao.Font = new Font("Segoe UI", 9F);
         lblSituacao.ForeColor = Cores.PrimaryDarkText;
-        lblSituacao.Location = new Point(412, 80);
+        lblSituacao.Location = new Point(380, 80);
         lblSituacao.Name = "lblSituacao";
         lblSituacao.Size = new Size(51, 15);
         lblSituacao.TabIndex = 9;
@@ -305,9 +316,9 @@ partial class AgendaUC
         cbxSituacao.DropDownStyle = ComboBoxStyle.DropDownList;
         cbxSituacao.Font = new Font("Segoe UI", 9F);
         cbxSituacao.FormattingEnabled = true;
-        cbxSituacao.Location = new Point(412, 98);
+        cbxSituacao.Location = new Point(380, 98);
         cbxSituacao.Name = "cbxSituacao";
-        cbxSituacao.Size = new Size(200, 23);
+        cbxSituacao.Size = new Size(168, 23);
         cbxSituacao.TabIndex = 10;
         // 
         // lblValor
@@ -357,7 +368,7 @@ partial class AgendaUC
         txtDescricao.Font = new Font("Segoe UI", 9F);
         txtDescricao.Location = new Point(12, 150);
         txtDescricao.Name = "txtDescricao";
-        txtDescricao.Size = new Size(600, 23);
+        txtDescricao.Size = new Size(536, 23);
         txtDescricao.TabIndex = 15;
         // 
         // grpServicos
@@ -370,7 +381,7 @@ partial class AgendaUC
         grpServicos.ForeColor = Cores.PrimaryDarkText;
         grpServicos.Location = new Point(12, 184);
         grpServicos.Name = "grpServicos";
-        grpServicos.Size = new Size(600, 170);
+        grpServicos.Size = new Size(536, 170);
         grpServicos.TabIndex = 16;
         grpServicos.TabStop = false;
         grpServicos.Text = "Serviços";
@@ -378,12 +389,14 @@ partial class AgendaUC
         // clbServicos
         // 
         clbServicos.CheckOnClick = true;
+        clbServicos.ColumnWidth = 165;
         clbServicos.Font = new Font("Segoe UI", 9F);
         clbServicos.FormattingEnabled = true;
         clbServicos.IntegralHeight = false;
+        clbServicos.MultiColumn = true;
         clbServicos.Location = new Point(10, 20);
         clbServicos.Name = "clbServicos";
-        clbServicos.Size = new Size(580, 90);
+        clbServicos.Size = new Size(516, 90);
         clbServicos.TabIndex = 0;
         // 
         // btnNovo
@@ -419,11 +432,12 @@ partial class AgendaUC
         AutoScroll = true;
         BackColor = Cores.Creme;
         Controls.Add(lblTitulo);
+        Controls.Add(dtpDataAgenda);
         Controls.Add(grpAtendimentos);
         Controls.Add(grpDados);
         ForeColor = Cores.Gray900;
         Name = "AgendaUC";
-        Size = new Size(654, 860);
+        Size = new Size(580, 860);
         grpAtendimentos.ResumeLayout(false);
         ((System.ComponentModel.ISupportInitialize)dgvAtendimentos).EndInit();
         grpDados.ResumeLayout(false);

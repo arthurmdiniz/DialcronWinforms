@@ -35,6 +35,17 @@ public partial class AgendaUC : UserControl
         dgvAtendimentos.SelectionChanged += DgvAtendimentos_SelectionChanged;
         clbServicos.ItemCheck += ClbServicos_ItemCheck;
         Load += AgendaUC_Load;
+        dtpDataAgenda.ValueChanged += (_, _) => FiltrarPorDia(dtpDataAgenda.Value.Date);
+        Resize += (_, _) => CentralizarConteudo();
+    }
+
+    private void CentralizarConteudo()
+    {
+        var x = Math.Max(0, (ClientSize.Width - grpDados.Width) / 2);
+        lblTitulo.Left = x;
+        dtpDataAgenda.Left = x + grpDados.Width - dtpDataAgenda.Width;
+        grpAtendimentos.Left = x;
+        grpDados.Left = x;
     }
 
     private void ClbServicos_ItemCheck(object? sender, ItemCheckEventArgs e)
@@ -85,7 +96,7 @@ public partial class AgendaUC : UserControl
         foreach (var servico in _servicos)
             clbServicos.Items.Add(servico);
 
-        FiltrarPorDia(DateTime.Today);
+        FiltrarPorDia(dtpDataAgenda.Value.Date);
     }
 
     private void FiltrarPorDia(DateTime data)
@@ -138,14 +149,14 @@ public partial class AgendaUC : UserControl
             _proximoId++;
             PreencherModelo(novo);
             _itens.Add(novo);
-            FiltrarPorDia(DateTime.Today);
+            FiltrarPorDia(dtpDataAgenda.Value.Date);
             SelecionarNaGrid(novo);
         }
         else
         {
             PreencherModelo(_selecionado);
             var atual = _selecionado;
-            FiltrarPorDia(DateTime.Today);
+            FiltrarPorDia(dtpDataAgenda.Value.Date);
             SelecionarNaGrid(atual);
         }
     }
@@ -255,7 +266,7 @@ public partial class AgendaUC : UserControl
         cbxUnidade.SelectedIndex = -1;
         cbxProfissional.SelectedIndex = -1;
         cbxSituacao.SelectedItem = Situacoes[0];
-        dtpAgendamento.Value = DateTime.Today.Add(DateTime.Now.TimeOfDay);
+        dtpAgendamento.Value = dtpDataAgenda.Value.Date.Add(DateTime.Now.TimeOfDay);
     }
 
     private sealed record OpcaoSituacao(string Codigo, string Descricao);
