@@ -16,7 +16,18 @@ public partial class UnidadeUC : UserControl
 
         dgvUnidades.DataSource = _unidades;
         dgvUnidades.SelectionChanged += DgvUnidades_SelectionChanged;
+        dgvUnidades.KeyDown += DgvUnidades_KeyDown;
         Load += OnUnidadeUCLoad;
+    }
+
+    private void DgvUnidades_KeyDown(object? sender, KeyEventArgs e)
+    {
+        if (e.KeyCode == Keys.Enter)
+        {
+            e.SuppressKeyPress = true;
+            e.Handled = true;
+            txtNomeFantasia.Focus();
+        }
     }
 
     private async void OnUnidadeUCLoad(object? sender, EventArgs e)

@@ -23,9 +23,20 @@ public partial class ServicoUC : UserControl
 
         dgvServicos.DataSource = _servico;
         dgvServicos.SelectionChanged += DgvServicos_SelectionChanged;
+        dgvServicos.KeyDown += DgvServicos_KeyDown;
         dgvServicos.CellFormatting += DgvServicos_CellFormatting;
         txtPreco.Leave += TxtPreco_Leave;
         Load += OnServicoUCLoad;
+    }
+
+    private void DgvServicos_KeyDown(object? sender, KeyEventArgs e)
+    {
+        if (e.KeyCode == Keys.Enter)
+        {
+            e.SuppressKeyPress = true;
+            e.Handled = true;
+            txtNome.Focus();
+        }
     }
 
     private void TxtPreco_Leave(object? sender, EventArgs e)
@@ -81,6 +92,19 @@ public partial class ServicoUC : UserControl
     private static async Task<ServicoDAO> CriarDaoAsync()
     {
         return new ServicoDAO(await Database.Instance.InitializeAsync());
+=======
+        dgvServicos.KeyDown += DgvServicos_KeyDown;
+    }
+
+    private void DgvServicos_KeyDown(object? sender, KeyEventArgs e)
+    {
+        if (e.KeyCode == Keys.Enter)
+        {
+            e.SuppressKeyPress = true;
+            e.Handled = true;
+            txtNome.Focus();
+        }
+>>>>>>> Stashed changes
     }
 
     private void DgvServicos_SelectionChanged(object? sender, EventArgs e)
