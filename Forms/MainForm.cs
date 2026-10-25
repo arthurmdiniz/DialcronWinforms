@@ -7,13 +7,6 @@ namespace DialcronWinforms.Forms;
 
 public partial class MainForm : Form
 {
-    private AgendaUC? _agendaUC;
-    private CadastrosUC? _cadastrosUC;
-    private ClienteUC? _clienteUC;
-    private ServicoUC? _servicoUC;
-    private ProfissionalUC? _profissionalUC;
-    private UnidadeUC? _unidadeUC;
-
     public MainForm()
     {
         InitializeComponent();
@@ -37,12 +30,6 @@ public partial class MainForm : Form
 
         NavigationHelper.Initialize(pnlConteudo);
 
-        _cadastrosUC = new CadastrosUC();
-        _cadastrosUC.ClientesClicked += (s, e) => NavigateToCliente();
-        _cadastrosUC.ServicosClicked += (s, e) => NavigateToServico();
-        _cadastrosUC.ProfissionaisClicked += (s, e) => NavigateToProfissional();
-        _cadastrosUC.UnidadesClicked += (s, e) => NavigateToUnidade();
-
         btnAgenda.Click += BtnAgenda_Click;
         btnCadastros.Click += BtnCadastros_Click;
         btnBackup.Click += BtnBackup_Click;
@@ -50,37 +37,37 @@ public partial class MainForm : Form
 
     private void BtnAgenda_Click(object? sender, EventArgs e)
     {
-        _agendaUC ??= new AgendaUC();
-        NavigationHelper.NavigateTo(_agendaUC);
+        NavigationHelper.NavigateTo(new AgendaUC());
     }
 
     private void BtnCadastros_Click(object? sender, EventArgs e)
     {
-        NavigationHelper.NavigateTo(_cadastrosUC!);
+        var cadastros = new CadastrosUC();
+        cadastros.ClientesClicked += (s, args) => NavigateToCliente();
+        cadastros.ServicosClicked += (s, args) => NavigateToServico();
+        cadastros.ProfissionaisClicked += (s, args) => NavigateToProfissional();
+        cadastros.UnidadesClicked += (s, args) => NavigateToUnidade();
+        NavigationHelper.NavigateTo(cadastros);
     }
 
-    private void NavigateToCliente()
+    private static void NavigateToCliente()
     {
-        _clienteUC ??= new ClienteUC();
-        NavigationHelper.NavigateTo(_clienteUC);
+        NavigationHelper.NavigateTo(new ClienteUC());
     }
 
-    private void NavigateToServico()
+    private static void NavigateToServico()
     {
-        _servicoUC ??= new ServicoUC();
-        NavigationHelper.NavigateTo(_servicoUC);
+        NavigationHelper.NavigateTo(new ServicoUC());
     }
 
-    private void NavigateToProfissional()
+    private static void NavigateToProfissional()
     {
-        _profissionalUC ??= new ProfissionalUC();
-        NavigationHelper.NavigateTo(_profissionalUC);
+        NavigationHelper.NavigateTo(new ProfissionalUC());
     }
 
-    private void NavigateToUnidade()
+    private static void NavigateToUnidade()
     {
-        _unidadeUC ??= new UnidadeUC();
-        NavigationHelper.NavigateTo(_unidadeUC);
+        NavigationHelper.NavigateTo(new UnidadeUC());
     }
 
     private async void BtnBackup_Click(object? sender, EventArgs e)
