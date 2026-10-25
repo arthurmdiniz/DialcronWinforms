@@ -121,6 +121,7 @@ partial class ProfissionalUC
         dgvProfissionais.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
         dgvProfissionais.Size = new Size(600, 175);
         dgvProfissionais.TabIndex = 0;
+        dgvProfissionais.StandardTab = true;
         // 
         // colId
         // 

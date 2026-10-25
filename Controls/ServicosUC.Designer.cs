@@ -99,6 +99,7 @@ partial class ServicoUC
         dgvServicos.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
         dgvServicos.Size = new Size(600, 175);
         dgvServicos.TabIndex = 0;
+        dgvServicos.StandardTab = true;
         dgvServicos.AutoGenerateColumns = false;
         dgvServicos.Columns.AddRange(new DataGridViewColumn[] { colId, colNome, colPreco, colTempo });
         // 

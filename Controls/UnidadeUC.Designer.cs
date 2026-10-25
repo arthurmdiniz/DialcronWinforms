@@ -147,6 +147,7 @@ partial class UnidadeUC
         dgvUnidades.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
         dgvUnidades.Size = new Size(600, 175);
         dgvUnidades.TabIndex = 0;
+        dgvUnidades.StandardTab = true;
         // 
         // colID
         // 

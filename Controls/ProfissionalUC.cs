@@ -22,7 +22,18 @@ public partial class ProfissionalUC : UserControl
 
         dgvProfissionais.DataSource = _profissionais;
         dgvProfissionais.SelectionChanged += DgvProfissionais_SelectionChanged;
+        dgvProfissionais.KeyDown += DgvProfissionais_KeyDown;
         Load += OnProfissionalUCLoad;
+    }
+
+    private void DgvProfissionais_KeyDown(object? sender, KeyEventArgs e)
+    {
+        if (e.KeyCode == Keys.Enter)
+        {
+            e.SuppressKeyPress = true;
+            e.Handled = true;
+            txtNome.Focus();
+        }
     }
 
     private async void OnProfissionalUCLoad(object? sender, EventArgs e)
