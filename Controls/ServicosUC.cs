@@ -92,19 +92,6 @@ public partial class ServicoUC : UserControl
     private static async Task<ServicoDAO> CriarDaoAsync()
     {
         return new ServicoDAO(await Database.Instance.InitializeAsync());
-=======
-        dgvServicos.KeyDown += DgvServicos_KeyDown;
-    }
-
-    private void DgvServicos_KeyDown(object? sender, KeyEventArgs e)
-    {
-        if (e.KeyCode == Keys.Enter)
-        {
-            e.SuppressKeyPress = true;
-            e.Handled = true;
-            txtNome.Focus();
-        }
->>>>>>> Stashed changes
     }
 
     private void DgvServicos_SelectionChanged(object? sender, EventArgs e)

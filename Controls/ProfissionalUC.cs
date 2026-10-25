@@ -64,19 +64,6 @@ public partial class ProfissionalUC : UserControl
     private static async Task<ProfissionalDAO> CriarDaoAsync()
     {
         return new ProfissionalDAO(await Database.Instance.InitializeAsync());
-=======
-        dgvProfissionais.KeyDown += DgvProfissionais_KeyDown;
-    }
-
-    private void DgvProfissionais_KeyDown(object? sender, KeyEventArgs e)
-    {
-        if (e.KeyCode == Keys.Enter)
-        {
-            e.SuppressKeyPress = true;
-            e.Handled = true;
-            txtNome.Focus();
-        }
->>>>>>> Stashed changes
     }
 
     private void DgvProfissionais_SelectionChanged(object? sender, EventArgs e)
