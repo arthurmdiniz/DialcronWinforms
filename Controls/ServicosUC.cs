@@ -1,4 +1,7 @@
 using System.ComponentModel;
+using System.Globalization;
+using DialcronWinforms.Data;
+using DialcronWinforms.Data.DAO;
 using DialcronWinforms.Models;
 
 namespace DialcronWinforms.Controls;
@@ -8,7 +11,6 @@ public partial class ServicoUC : UserControl
     private readonly BindingList<Servico> _servico = new();
     private readonly BindingList<Unidade> _unidades = new();
     private Servico? _selecionado;
-    private int _proximoId = 1;
 
     public ServicoUC()
     {
@@ -50,23 +52,36 @@ public partial class ServicoUC : UserControl
         txtNome.Focus();
     }
 
-    private void BtnSalvar_Click(object? sender, EventArgs e)
+    private async void BtnSalvar_Click(object? sender, EventArgs e)
     {
         if (!ValidarFormulario())
             return;
 
-        if (_selecionado is null)
+        try
         {
-            var novo = new Servico { Id = _proximoId++ };
-            PreencherModelo(novo);
-            _servico.Add(novo);
-            _selecionado = novo;
-            SelecionarNaGrid(novo);
+            var dao = await CriarDaoAsync();
+
+            if (_selecionado is null)
+            {
+                var novo = new Servico();
+                PreencherModelo(novo);
+                await dao.InsertAsync(novo);
+                MessageBox.Show("Serviço cadastrado com sucesso.", "Serviços", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                _servico.Add(novo);
+                _selecionado = novo;
+                SelecionarNaGrid(novo);
+            }
+            else
+            {
+                PreencherModelo(_selecionado);
+                await dao.UpdateAsync(_selecionado);
+                dgvServicos.Refresh();
+                MessageBox.Show("Serviço atualizado com sucesso.", "Serviços", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
         }
-        else
+        catch (Exception ex)
         {
-            PreencherModelo(_selecionado);
-            dgvServicos.Refresh();
+            MessageBox.Show($"Não foi possível salvar o serviço: {ex.Message}", "Serviços", MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
     }
 
@@ -75,6 +90,12 @@ public partial class ServicoUC : UserControl
         if (string.IsNullOrWhiteSpace(txtNome.Text))
         {
             Alertar("Informe o nome do Serviço.", txtNome);
+            return false;
+        }
+
+        if (cbxUnidade.SelectedItem is not Unidade)
+        {
+            Alertar("Selecione a unidade do serviço.", cbxUnidade);
             return false;
         }
 
@@ -101,8 +122,8 @@ public partial class ServicoUC : UserControl
 
     private void LimparSelecao()
     {
-        _selecionado = null;
         dgvServicos.ClearSelection();
+        _selecionado = null;
     }
 
     private void SelecionarNaGrid(Servico servico)
@@ -122,7 +143,7 @@ public partial class ServicoUC : UserControl
     {
         cbxUnidade.SelectedItem = _unidades.FirstOrDefault(u => u.IdUnidade == s.Unidade);
         txtNome.Text = s.Nome;
-        txtPreco.Text = s.Preco.ToString();
+        txtPreco.Text = FormatarPreco((decimal)s.Preco);
         txtTempo.Text = s.DuracaoMinutos.ToString();
         chkAtivo.Checked = s.Ativo != "N";
     }
