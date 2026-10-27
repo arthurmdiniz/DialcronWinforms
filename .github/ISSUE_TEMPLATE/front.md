@@ -7,7 +7,7 @@ labels: front
 
 ## Tipo
 
-- [ ] Front (Tela)
+- [X] Front (Tela)
 - [ ] Back (DAO)
 - [ ] Integração
 - [ ] Outros

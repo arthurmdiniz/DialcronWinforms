@@ -9,7 +9,7 @@ labels: integracao
 
 - [ ] Front (Tela)
 - [ ] Back (DAO)
-- [ ] Integração
+- [X] Integração
 - [ ] Outros
 - [ ] Documentação
 

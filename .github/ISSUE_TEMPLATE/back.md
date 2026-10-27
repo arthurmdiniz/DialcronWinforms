@@ -8,7 +8,7 @@ labels: back
 ## Tipo
 
 - [ ] Front (Tela)
-- [ ] Back (DAO)
+- [x] Back (DAO)
 - [ ] Integração
 - [ ] Outros
 - [ ] Documentação
