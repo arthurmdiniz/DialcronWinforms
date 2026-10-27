@@ -11,7 +11,7 @@ labels: documentacao
 - [ ] Back (DAO)
 - [ ] Integração
 - [ ] Outros
-- [ ] Documentação
+- [X] Documentação
 
 ## O que precisa ser documentado
 
