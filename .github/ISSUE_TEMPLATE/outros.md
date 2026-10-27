@@ -10,7 +10,7 @@ labels: outros
 - [ ] Front (Tela)
 - [ ] Back (DAO)
 - [ ] Integração
-- [ ] Outros
+- [X] Outros
 - [ ] Documentação
 
 ## Descrição
