@@ -1,4 +1,5 @@
 using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using SQLite;
 using DialcronWinforms.Data;
@@ -8,6 +9,7 @@ using DialcronWinforms.Models;
 
 namespace DialcronWinforms.Controls;
 
+[ExcludeFromCodeCoverage]
 public partial class AgendaUC : UserControl
 {
     private static readonly OpcaoSituacao[] Situacoes =

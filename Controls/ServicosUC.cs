@@ -1,4 +1,5 @@
 using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using DialcronWinforms.Data;
 using DialcronWinforms.Data.DAO;
@@ -6,6 +7,7 @@ using DialcronWinforms.Models;
 
 namespace DialcronWinforms.Controls;
 
+[ExcludeFromCodeCoverage]
 public partial class ServicoUC : UserControl
 {
     private readonly BindingList<Servico> _servico = new();
