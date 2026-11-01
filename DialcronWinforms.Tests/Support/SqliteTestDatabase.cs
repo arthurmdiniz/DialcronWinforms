@@ -13,6 +13,7 @@ public sealed class SqliteTestDatabase : IAsyncDisposable
     }
 
     public SQLiteAsyncConnection Connection { get; }
+    public string FilePath => _path;
 
     public static async Task<SqliteTestDatabase> CreateAsync()
     {
