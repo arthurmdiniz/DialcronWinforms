@@ -17,18 +17,22 @@ public class FuncoesGeraisTests
     }
 
     [Theory]
-    [InlineData("123,45", 123.45)]
-    [InlineData("123.45", 123.45)]
-    [InlineData("R$ 1.234,56", 1.23456)]
-    [InlineData("1.234.56", 1.23456)]
-    [InlineData("0", 0)]
+    [InlineData("123,45", "123.45")]
+    [InlineData("123.45", "123.45")]
+    [InlineData("R$ 1.234,56", "1.23456")]
+    [InlineData("1.234.56", "1.23456")]
+    [InlineData("0", "0")]
     [InlineData("", null)]
     [InlineData("   ", null)]
     [InlineData("abc", null)]
     [InlineData(null, null)]
-    [InlineData("1,2,3", 1.23)]
-    public void LerDecimal_ConverteTextoNumerico(string? texto, decimal? esperado)
+    [InlineData("1,2,3", "1.23")]
+    public void LerDecimal_ConverteTextoNumerico(string? texto, string? esperadoTexto)
     {
+        decimal? esperado = esperadoTexto is null
+            ? null
+            : decimal.Parse(esperadoTexto, System.Globalization.CultureInfo.InvariantCulture);
+
         Assert.Equal(esperado, FuncoesGerais.LerDecimal(texto!));
     }
 
