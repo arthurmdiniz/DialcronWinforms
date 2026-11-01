@@ -1,7 +1,9 @@
+using System.Diagnostics.CodeAnalysis;
 using DialcronWinforms.Models;
 
 namespace DialcronWinforms.Forms;
 
+[ExcludeFromCodeCoverage]
 public class BuscarClienteForm : Form
 {
     private readonly List<Cliente> _clientes;
