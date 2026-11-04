@@ -27,6 +27,9 @@ public class FuncoesGeraisTests
     [InlineData("abc", null)]
     [InlineData(null, null)]
     [InlineData("1,2,3", "1.23")]
+    [InlineData(".", null)]
+    [InlineData(",", null)]
+    [InlineData("...", null)]
     public void LerDecimal_ConverteTextoNumerico(string? texto, string? esperadoTexto)
     {
         decimal? esperado = esperadoTexto is null
