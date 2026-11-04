@@ -136,6 +136,49 @@ public class DatabaseTests : IAsyncLifetime
         Close(connection);
     }
 
+    [Fact]
+    public async Task CreateDatabaseAsync_QuandoBancoJaExiste_SobrescreveComASemente()
+    {
+        await File.WriteAllBytesAsync(DbPath, []);
+        await CreateSeedAsync();
+        var database = CreateDatabase();
+
+        var connection = await database.CreateDatabaseAsync();
+
+        Assert.Equal(1, await connection.ExecuteScalarAsync<int>("SELECT COUNT(*) FROM tabela_semente"));
+        Close(connection);
+    }
+
+    [Fact]
+    public async Task CreateDatabaseAsync_QuandoPastaNaoExiste_CriaPastaEBanco()
+    {
+        var nestedPath = Path.Combine(_directory, "subpasta", "banco", Database.DbFileName);
+        var database = new Database(nestedPath, SeedPath);
+
+        var connection = await database.CreateDatabaseAsync();
+
+        Assert.True(File.Exists(nestedPath));
+        Close(connection);
+    }
+
+    [Fact]
+    public void Instance_QuandoChamadoMaisDeUmaVez_RetornaMesmaInstancia()
+    {
+        var primeira = Database.Instance;
+        var segunda = Database.Instance;
+
+        Assert.NotNull(primeira);
+        Assert.Same(primeira, segunda);
+    }
+
+    [Fact]
+    public void DbPath_ApontaParaPastaBaseComNomeDoBanco()
+    {
+        var esperado = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, Database.DbFileName);
+
+        Assert.Equal(esperado, Database.DbPath);
+    }
+
     private Database CreateDatabase() => new(DbPath, SeedPath);
 
     private async Task CreateSeedAsync()
