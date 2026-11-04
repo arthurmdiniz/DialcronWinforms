@@ -1,10 +1,12 @@
 using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
 using DialcronWinforms.Data;
 using DialcronWinforms.Data.DAO;
 using DialcronWinforms.Models;
 
 namespace DialcronWinforms.Controls;
 
+[ExcludeFromCodeCoverage]
 public partial class UnidadeUC : UserControl
 {
     private readonly BindingList<Unidade> _unidades = new();

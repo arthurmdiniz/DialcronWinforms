@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using DialcronWinforms.Controls;
 using DialcronWinforms.Data;
 using DialcronWinforms.Data.DAO;
@@ -5,6 +6,7 @@ using DialcronWinforms.Navigation;
 
 namespace DialcronWinforms.Forms;
 
+[ExcludeFromCodeCoverage]
 public partial class MainForm : Form
 {
     public MainForm()
