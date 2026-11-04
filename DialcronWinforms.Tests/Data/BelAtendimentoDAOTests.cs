@@ -79,6 +79,29 @@ public class BelAtendimentoDAOTests : IAsyncLifetime
     }
 
     [Fact]
+    public async Task GetByAtendimentoAsync_ComAtendimentoExistente_RetornaRegistro()
+    {
+        await _dao.InsertAsync(CriarBelAtendimento(1, "2026-10-31 09:00:00"));
+        await _dao.InsertAsync(CriarBelAtendimento(42, "2026-10-31 11:00:00"));
+
+        var encontrado = await _dao.GetByAtendimentoAsync(42);
+
+        Assert.NotNull(encontrado);
+        Assert.Equal(42, encontrado.Atendimento);
+        Assert.Equal("2026-10-31 11:00:00", encontrado.DtaAtendimento);
+    }
+
+    [Fact]
+    public async Task GetByAtendimentoAsync_ComAtendimentoInexistente_RetornaNulo()
+    {
+        await _dao.InsertAsync(CriarBelAtendimento(1, "2026-10-31 09:00:00"));
+
+        var encontrado = await _dao.GetByAtendimentoAsync(99);
+
+        Assert.Null(encontrado);
+    }
+
+    [Fact]
     public async Task InsertAsync_ComDadosValidos_GeraIdEPersiste()
     {
         var belAtendimento = CriarBelAtendimento(42, "2026-10-31 11:00:00");
