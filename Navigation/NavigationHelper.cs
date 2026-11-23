@@ -1,5 +1,8 @@
+using System.Diagnostics.CodeAnalysis;
+
 namespace DialcronWinforms.Navigation;
 
+[ExcludeFromCodeCoverage]
 public static class NavigationHelper
 {
     private static Panel? _container;

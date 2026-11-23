@@ -1,7 +1,9 @@
+using System.Diagnostics.CodeAnalysis;
 using System.Drawing;
 
 namespace DialcronWinforms;
 
+[ExcludeFromCodeCoverage]
 public static class Cores
 {
     // IDENTIDADE VISUAL E NAVEGAÇÃO

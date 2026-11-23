@@ -1,5 +1,8 @@
+using System.Diagnostics.CodeAnalysis;
+
 namespace DialcronWinforms.Controls;
 
+[ExcludeFromCodeCoverage]
 public partial class CadastrosUC : UserControl
 {
     public event EventHandler? ClientesClicked;
