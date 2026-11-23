@@ -7,7 +7,7 @@ labels: front
 
 ## Tipo
 
-- [ ] Front (Tela)
+- [X] Front (Tela)
 - [ ] Back (DAO)
 - [ ] Integração
 - [ ] Outros
@@ -24,15 +24,16 @@ labels: front
 ### Convenções do projeto
 
 - Cores: usar `Cores.cs` (Primary, Secondary, Creme, etc.)
-- Arquivo: `Forms/[NomeDaTela]Form.cs`
-- Namespace: `DialcronWinforms.Forms`
+- Arquivo: `Controls/[NomeDaTela]UC.cs`
+- Namespace: `DialcronWinforms.Controls`
+- Herança: `UserControl`
 - Controles: `_camelCase` com underscore
 
 ### Checklist
 
-- [ ] Forms/[NomeDaTela]Form.cs criado
-- [ ] Classe herda de Form
-- [ ] Text, Size, StartPosition, BackColor configurados
+- [ ] Controls/[NomeDaTela]UC.cs criado
+- [ ] Classe herda de UserControl
+- [ ] Tela registrada no MainForm (botão do menu ou evento de um pai)
 - [ ] Controles com _camelCase e underscore
 - [ ] Eventos Click e Load implementados
 - [ ] dotnet build sem erro
